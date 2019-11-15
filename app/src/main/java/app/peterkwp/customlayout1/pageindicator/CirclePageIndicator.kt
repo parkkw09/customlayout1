@@ -442,6 +442,9 @@ constructor(
         return savedState
     }
 
+//    @Parcelize
+//    data class SavedState(val currentPage): Parcelable
+
     @SuppressLint("ParcelCreator")
     class SavedState : BaseSavedState {
         var currentPage: Int = 0
