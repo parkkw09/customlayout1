@@ -18,9 +18,9 @@
         tools:layout="@layout/fragment_viewpager" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_kakaopay"
         android:name="app.peterkwp.customlayout1.ui.kakaopay.KakaoPayFragment"
-        android:label="@string/menu_slideshow"
+        android:label="@string/menu_kakaopay"
         tools:layout="@layout/fragment_kakaopay" />
 
     <fragment
