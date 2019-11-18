@@ -14,8 +14,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        resValue "string", "kakao_app_key", "189acceb5232166b405bfeeb2e81c49f"
-        resValue "string", "kakao_rest_key", "174d9ea41fd4055dbfffd95bb34018b6"
+        resValue "string", "kakao_app_key", "ad22e004d03f9fa1b106a0086174eb5e"
+        resValue "string", "kakao_rest_key", "03267c08306c17d3cf7797b8fe320954"
     }
     signingConfigs {
         release {
