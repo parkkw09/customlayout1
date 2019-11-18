@@ -13,7 +13,6 @@ import android.view.ViewConfiguration
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import app.peterkwp.customlayout1.R
-import kotlinx.android.parcel.Parcelize
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -21,9 +20,8 @@ class CirclePageIndicator
 @JvmOverloads
 constructor(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyle: Int = R.attr.circlePageIndicatorStyle
-) : View(context, attrs, defStyle), PageIndicator {
+    attrs: AttributeSet? = null
+) : View(context, attrs), PageIndicator {
 
     companion object {
         private const val INVALID_POINTER = -1
@@ -111,35 +109,20 @@ constructor(
     init {
         // Load defaults from resources
         val res = resources
-        val defaultPageColor = res.getColor(R.color.default_circle_indicator_page_color, null)
-        val defaultFillColor = res.getColor(R.color.default_circle_indicator_fill_color, null)
-        val defaultOrientation = res.getInteger(R.integer.default_circle_indicator_orientation)
-        val defaultStrokeColor = res.getColor(R.color.default_circle_indicator_stroke_color, null)
-        val defaultStrokeWidth = res.getDimension(R.dimen.default_circle_indicator_stroke_width)
-        val defaultRadius = res.getDimension(R.dimen.default_circle_indicator_radius)
-        val defaultCentered = res.getBoolean(R.bool.default_circle_indicator_centered)
-        val defaultSnap = res.getBoolean(R.bool.default_circle_indicator_snap)
-
-        // Retrieve styles attributes
-        val a = context.obtainStyledAttributes(attrs, R.styleable.CirclePageIndicator, defStyle, 0)
-
-        mCentered = a.getBoolean(R.styleable.CirclePageIndicator_centered, defaultCentered)
-        mOrientation = a.getInt(R.styleable.CirclePageIndicator_android_orientation, defaultOrientation)
         mPaintPageFill.style = Paint.Style.FILL
-        mPaintPageFill.color = a.getColor(R.styleable.CirclePageIndicator_pageColor, defaultPageColor)
+        mPaintPageFill.color = res.getColor(R.color.default_circle_indicator_page_color, null)
+
         mPaintStroke.style = Paint.Style.STROKE
-        mPaintStroke.color = a.getColor(R.styleable.CirclePageIndicator_strokeColor, defaultStrokeColor)
-        mPaintStroke.strokeWidth = a.getDimension(R.styleable.CirclePageIndicator_strokeWidth, defaultStrokeWidth)
+        mPaintStroke.color = res.getColor(R.color.default_circle_indicator_stroke_color, null)
+        mPaintStroke.strokeWidth = res.displayMetrics.density * 1.toFloat()
+
         mPaintFill.style = Paint.Style.FILL
-        mPaintFill.color = a.getColor(R.styleable.CirclePageIndicator_fillColor, defaultFillColor)
-        mRadius = a.getDimension(R.styleable.CirclePageIndicator_radius, defaultRadius)
-        mSnap = a.getBoolean(R.styleable.CirclePageIndicator_snap, defaultSnap)
+        mPaintFill.color = res.getColor(R.color.default_circle_indicator_fill_color, null)
 
-        a.getDrawable(R.styleable.CirclePageIndicator_android_background)?.run {
-            background = this
-        }
-
-        a.recycle()
+        mCentered = true
+        mOrientation = LinearLayout.HORIZONTAL
+        mRadius = res.displayMetrics.density * 3.toFloat()
+        mSnap = false
 
         mTouchSlop = ViewConfiguration.get(context).scaledDoubleTapSlop
     }
@@ -167,21 +150,22 @@ constructor(
         val shortPaddingBefore: Int
         if (mOrientation == LinearLayout.HORIZONTAL) {
             longSize = width
-            longPaddingBefore = paddingLeft
-            longPaddingAfter = paddingRight
+            longPaddingBefore = paddingStart
+            longPaddingAfter = paddingEnd
             shortPaddingBefore = paddingTop
         } else {
             longSize = height
             longPaddingBefore = paddingTop
             longPaddingAfter = paddingBottom
-            shortPaddingBefore = paddingLeft
+            shortPaddingBefore = paddingStart
         }
 
-        val threeRadius = mRadius * 3
+//        val offsetRadius = mRadius * 3
+        val offsetRadius = mRadius * 4
         val shortOffset = shortPaddingBefore + mRadius
         var longOffset = longPaddingBefore + mRadius
         if (mCentered) {
-            longOffset += (longSize - longPaddingBefore - longPaddingAfter) / 2.0f - count * threeRadius / 2.0f
+            longOffset += (longSize - longPaddingBefore - longPaddingAfter) / 2.0f - count * offsetRadius / 2.0f
         }
 
         var dX: Float
@@ -194,7 +178,7 @@ constructor(
 
         // Draw stroked circles
         for (iLoop in 0 until count) {
-            val drawLong = longOffset + iLoop * threeRadius
+            val drawLong = longOffset + iLoop * offsetRadius
             if (mOrientation == LinearLayout.HORIZONTAL) {
                 dX = drawLong
                 dY = shortOffset
@@ -214,9 +198,9 @@ constructor(
         }
 
         //Draw the filled circle according to the current scroll
-        var cx = (if(mSnap) mSnapPage else mCurrentPage) * threeRadius
+        var cx = (if(mSnap) mSnapPage else mCurrentPage) * offsetRadius
         if (!mSnap) {
-            cx += mPageOffset * threeRadius
+            cx += mPageOffset * offsetRadius
         }
         if (mOrientation == LinearLayout.HORIZONTAL) {
             dX = longOffset + cx
@@ -225,7 +209,9 @@ constructor(
             dX = shortOffset
             dY = longOffset + cx
         }
-        canvas.drawCircle(dX, dY, mRadius, mPaintFill)
+
+//        canvas.drawCircle(dX, dY, mRadius, mPaintFill)
+        canvas.drawRoundRect(dX - (mRadius * 2), dY + mRadius, dX + (mRadius * 2), dY - mRadius, mRadius, mRadius, mPaintFill)
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
@@ -319,14 +305,10 @@ constructor(
     }
 
     override fun setViewPager(view: ViewPager) {
-        val viewPager = mViewPager
-        viewPager ?: return
-        if (viewPager === view) return
+        if (mViewPager === view) return
 
-        viewPager.apply {
-            removeOnPageChangeListener(this@CirclePageIndicator)
-            checkNotNull(view.adapter) { "ViewPager does not have adapter instance." }
-        }
+        mViewPager?.apply { removeOnPageChangeListener(this@CirclePageIndicator) }
+        checkNotNull(view.adapter) { "ViewPager does not have adapter instance." }
 
         mViewPager = view
         mViewPager?.apply {
@@ -372,7 +354,7 @@ constructor(
             mSnapPage = position
             invalidate()
         }
-        mListener.apply { onPageSelected(position) }
+        mListener?.apply { onPageSelected(position) }
     }
 
     override fun setOnPageChangeListener(listener: ViewPager.OnPageChangeListener) {
