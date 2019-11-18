@@ -1,4 +1,4 @@
-package app.peterkwp.customlayout1.ui.slideshow
+package app.peterkwp.customlayout1.ui.kakaopay
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import app.peterkwp.customlayout1.R
 
-class SlideshowFragment : Fragment() {
+class KakaoPayFragment : Fragment() {
 
-    private lateinit var slideshowViewModel: SlideshowViewModel
+    private lateinit var kakaoPayViewModel: KakaoPayViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        slideshowViewModel =
-            ViewModelProviders.of(this).get(SlideshowViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_slideshow, container, false)
-        val textView: TextView = root.findViewById(R.id.text_slideshow)
-        slideshowViewModel.text.observe(this, Observer {
+        kakaoPayViewModel =
+            ViewModelProviders.of(this).get(KakaoPayViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_kakaopay, container, false)
+        val textView: TextView = root.findViewById(R.id.text_title)
+        kakaoPayViewModel.text.observe(this, Observer {
             textView.text = it
         })
         return root

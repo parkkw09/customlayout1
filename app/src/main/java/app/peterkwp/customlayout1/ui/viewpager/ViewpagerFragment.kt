@@ -24,7 +24,7 @@ class ViewpagerFragment : Fragment() {
         viewpagerViewModel =
             ViewModelProviders.of(this).get(ViewpagerViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_viewpager, container, false)
-        val textView: TextView = root.findViewById(R.id.text_viewpager)
+        val textView: TextView = root.findViewById(R.id.text_title)
         val viewPager: ViewPager = root.findViewById(R.id.viewpager)
         val indicator: CirclePageIndicator = root.findViewById(R.id.indicator)
         val adapter = DefaultAdapter()
