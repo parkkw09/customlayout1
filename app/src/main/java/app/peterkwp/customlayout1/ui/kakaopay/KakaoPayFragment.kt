@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
 import dagger.android.support.DaggerFragment
+import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class KakaoPayFragment : DaggerFragment() {
@@ -22,6 +23,8 @@ class KakaoPayFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: KakaoPayViewModelFactory
     private lateinit var kakaoPayViewModel: KakaoPayViewModel
+
+    val disposable: CompositeDisposable = CompositeDisposable()
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initUI(view: View) {
@@ -32,6 +35,10 @@ class KakaoPayFragment : DaggerFragment() {
 
         kakaoPayViewModel.text.observe(this, Observer {
             textView.text = it
+        })
+
+        kakaoPayViewModel.url.observe(this, Observer {
+            webView.loadUrl(it)
         })
 
         webView.isVerticalScrollBarEnabled = false
@@ -70,11 +77,25 @@ class KakaoPayFragment : DaggerFragment() {
         }
 
         kakaopay.setOnClickListener {
-            webView.loadUrl("https://www.kakaopay.com/")
+//            webView.loadUrl("https://mockup-pg-web.kakao.com/")
+            kakaoPayViewModel.transactionTest().apply {
+                disposable.add(this)
+            }
         }
         inicis.setOnClickListener {
             webView.loadUrl("https://www.inicis.com/")
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(App.TAG, "onCreate()")
+    }
+
+    override fun onDestroy() {
+        Log.d(App.TAG, "onDestroy()")
+        disposable.clear()
+        super.onDestroy()
     }
 
     override fun onCreateView(

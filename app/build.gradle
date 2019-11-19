@@ -16,6 +16,7 @@ android {
 
         resValue "string", "kakao_app_key", "ad22e004d03f9fa1b106a0086174eb5e"
         resValue "string", "kakao_rest_key", "03267c08306c17d3cf7797b8fe320954"
+        resValue "string", "kakao_admin_key", "62382aafb23100c5fd92b5edf86f31af"
     }
     signingConfigs {
         release {

@@ -3,7 +3,9 @@ package app.peterkwp.customlayout1.di
 import android.content.Context
 import android.util.Log
 import app.peterkwp.customlayout1.App
+import app.peterkwp.customlayout1.R
 import app.peterkwp.customlayout1.api.KakaoInterceptor
+import app.peterkwp.customlayout1.feature.AppConst
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -13,14 +15,6 @@ import javax.inject.Singleton
 
 @Module
 class NetworkModule {
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor, interceptor: KakaoInterceptor): OkHttpClient
-            = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .addInterceptor(interceptor)
-        .build()
 
     @Provides
     @Singleton
@@ -39,7 +33,33 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideKakaoInterceptor(@Named("appContext") ctx: Context): KakaoInterceptor {
-        return KakaoInterceptor(ctx)
+    @Named(AppConst.KAKAO_API)
+    fun provideKakaoInterceptor1(@Named("appContext") ctx: Context): KakaoInterceptor {
+        return KakaoInterceptor(ctx.getString(R.string.kakao_rest_key))
     }
+
+    @Provides
+    @Singleton
+    @Named(AppConst.KAKAO_API)
+    fun provideOkHttpClient1(loggingInterceptor: HttpLoggingInterceptor, @Named(AppConst.KAKAO_API) interceptor: KakaoInterceptor): OkHttpClient
+            = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .addInterceptor(interceptor)
+        .build()
+
+    @Provides
+    @Singleton
+    @Named(AppConst.KAKAO_PAY_API)
+    fun provideKakaoInterceptor2(@Named("appContext") ctx: Context): KakaoInterceptor {
+        return KakaoInterceptor(ctx.getString(R.string.kakao_admin_key))
+    }
+
+    @Provides
+    @Singleton
+    @Named(AppConst.KAKAO_PAY_API)
+    fun provideOkHttpClient2(loggingInterceptor: HttpLoggingInterceptor, @Named(AppConst.KAKAO_PAY_API) interceptor: KakaoInterceptor): OkHttpClient
+            = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .addInterceptor(interceptor)
+        .build()
 }
