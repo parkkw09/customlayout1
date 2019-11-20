@@ -19,8 +19,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
+import com.google.gson.Gson
+import com.google.gson.JsonArray
 import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import java.net.URISyntaxException
 import javax.inject.Inject
 
@@ -33,6 +36,38 @@ class KakaoPayFragment : DaggerFragment() {
 
     val disposable: CompositeDisposable = CompositeDisposable()
 
+    private fun transactionTest(): Disposable {
+        val availableCards = JsonArray()
+        availableCards.add("BC")
+        availableCards.add("HANA")
+        val jsonCards = Gson().toJson(availableCards)
+        Log.d(App.TAG, "jsonCards=[ $jsonCards ]")
+        return kakaoPayViewModel.transactionReady(
+            cid = "TC0ONETIME",
+            partner_order_id = "partner_order_id",
+            partner_user_id = "partner_user_id",
+            item_name = "초코파이",
+            quantity =  "1",
+            total_amount = "2200",
+            tax_free_amount = "200",
+            vat_amount = "0",
+            approval_url = "https://developers.kakao.com/success",
+            cancel_url = "https://developers.kakao.com/fail",
+            fail_url = "https://developers.kakao.com/cancel",
+            available_cards = jsonCards
+        )
+    }
+
+    private fun transactionApproveTest(tid: String, token: String): Disposable {
+        return kakaoPayViewModel.transactionApprove(
+            cid = "TC0ONETIME",
+            tid = tid,
+            partner_order_id = "partner_order_id",
+            partner_user_id = "partner_user_id",
+            pg_token = token
+        )
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private fun initUI(view: View) {
         val textView: TextView = view.findViewById(R.id.text_title)
@@ -42,6 +77,9 @@ class KakaoPayFragment : DaggerFragment() {
 
         kakaoPayViewModel.text.observe(this, Observer {
             textView.text = it
+            if (it.contains("transaction complete")) {
+                webView.loadUrl("about:blank")
+            }
         })
 
         kakaoPayViewModel.url.observe(this, Observer {
@@ -97,6 +135,11 @@ class KakaoPayFragment : DaggerFragment() {
                         uri.getQueryParameter("pg_token")?.run {
                             // get name
                             Log.d(App.TAG, "pg_token = [$this]")
+                            kakaoPayViewModel.tid?.let { tid ->
+                                transactionApproveTest(tid, this).apply {
+                                    disposable.add(this)
+                                }
+                            }
                         }
                     }
                     url.startsWith("intent://") -> {
@@ -138,7 +181,7 @@ class KakaoPayFragment : DaggerFragment() {
         }
 
         kakaopay.setOnClickListener {
-            kakaoPayViewModel.transactionTest().apply {
+            transactionTest().apply {
                 disposable.add(this)
             }
         }
