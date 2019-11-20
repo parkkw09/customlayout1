@@ -1,13 +1,18 @@
 package app.peterkwp.customlayout1.ui.kakaopay
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.net.http.SslError
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.SslErrorHandler
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -16,7 +21,9 @@ import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
 import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
+import java.net.URISyntaxException
 import javax.inject.Inject
+
 
 class KakaoPayFragment : DaggerFragment() {
 
@@ -71,13 +78,66 @@ class KakaoPayFragment : DaggerFragment() {
 
             override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
                 Log.d(App.TAG, "shouldOverrideUrlLoading()[$url]")
-                webView.loadUrl(url)
+                when {
+                    url.isEmpty() -> {
+                        return false
+                    }
+                    url.contains("/success") -> {
+                        val uri = Uri.parse(url)
+                        Log.d(App.TAG, "scheme = [${uri.scheme}]")
+                        Log.d(App.TAG, "authority = [${uri.authority}]")
+                        Log.d(App.TAG, "path = [${uri.path}]")
+                        Log.d(App.TAG, "query = [${uri.query}]")
+                        uri.queryParameterNames.forEach { name ->
+                            if ("pg_token" == name) {
+                                // get name
+                                Log.d(App.TAG, "pg_token exist")
+                            }
+                        }
+                        uri.getQueryParameter("pg_token")?.run {
+                            // get name
+                            Log.d(App.TAG, "pg_token = [$this]")
+                        }
+                    }
+                    url.startsWith("intent://") -> {
+                        try {
+                            activity?.run {
+                                val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
+                                intent.`package`?.let { name ->
+                                    if (packageManager.getLaunchIntentForPackage(name) != null) {
+                                        startActivity(intent)
+                                    } else {
+                                        val marketIntent = Intent(Intent.ACTION_VIEW)
+                                        marketIntent.data =
+                                            Uri.parse("market://details?id=" + intent.getPackage())
+                                        startActivity(marketIntent)
+                                    }
+                                } ?: return false
+                                return true
+                            }
+                            return false
+                        } catch (e: Exception) {
+                            Log.e(App.TAG, "exception[${e.printStackTrace()}]")
+                        }
+                    }
+                    url.startsWith("market://") -> {
+                        try {
+                            val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
+                            intent?.let { startActivity(it) }
+                            return true
+                        } catch (e: URISyntaxException) {
+                            Log.e(App.TAG, "exception[${e.printStackTrace()}]")
+                        }
+                    }
+                    else -> {
+                        webView.loadUrl(url)
+                    }
+                }
                 return true
             }
         }
 
         kakaopay.setOnClickListener {
-//            webView.loadUrl("https://mockup-pg-web.kakao.com/")
             kakaoPayViewModel.transactionTest().apply {
                 disposable.add(this)
             }
