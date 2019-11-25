@@ -1,5 +1,6 @@
 package app.peterkwp.customlayout1.di
 
+import app.peterkwp.customlayout1.api.InicisApi
 import app.peterkwp.customlayout1.api.KakaoApi
 import app.peterkwp.customlayout1.feature.AppConst
 import dagger.Module
@@ -54,4 +55,19 @@ class ApiModule {
         .addConverterFactory(converter)
         .build()
         .create(KakaoApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named(AppConst.INI_PAY_API)
+    fun provideApi3(
+        @Named(AppConst.INI_PAY_API) okHttpClient: OkHttpClient,
+        callAdapter: CallAdapter.Factory,
+        converter: Converter.Factory): InicisApi
+            = Retrofit.Builder()
+        .baseUrl(AppConst.INI_PAY_API_ADDR)
+        .client(okHttpClient)
+        .addCallAdapterFactory(callAdapter)
+        .addConverterFactory(converter)
+        .build()
+        .create(InicisApi::class.java)
 }

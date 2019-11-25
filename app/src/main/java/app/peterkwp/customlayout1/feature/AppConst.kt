@@ -27,6 +27,15 @@ object AppConst {
     const val API_KAKAO_PAY_APPROVE = "/$V1/$PAYMENT/approve"
 
     /**
+     * INIPAY API
+     */
+    const val INI_PAY_API = "inipay"
+    const val INI_PAY_API_ADDR = "https://mobile.inicis.com"
+
+    // ready
+    const val API_INI_PAY_READY = "/smart/$PAYMENT/"
+
+    /**
      * Field
      */
 

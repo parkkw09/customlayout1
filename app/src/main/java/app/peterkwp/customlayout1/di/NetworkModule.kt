@@ -62,4 +62,12 @@ class NetworkModule {
         .addInterceptor(loggingInterceptor)
         .addInterceptor(interceptor)
         .build()
+
+    @Provides
+    @Singleton
+    @Named(AppConst.INI_PAY_API)
+    fun provideOkHttpClient3(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient
+            = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
 }

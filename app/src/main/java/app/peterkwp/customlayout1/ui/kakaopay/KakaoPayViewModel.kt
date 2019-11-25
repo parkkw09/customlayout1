@@ -5,12 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.peterkwp.customlayout1.App
+import app.peterkwp.customlayout1.api.InicisApi
 import app.peterkwp.customlayout1.api.KakaoApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class KakaoPayViewModel(val api: KakaoApi) : ViewModel() {
+class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "Kakao pay transaction test"
@@ -106,6 +107,52 @@ class KakaoPayViewModel(val api: KakaoApi) : ViewModel() {
             .subscribe({ response ->
                 Log.d(App.TAG, "subscribe()")
                 _text.value = "transaction complete approved time[${response.approved_at}]"
+            },{ e ->
+                Log.d(App.TAG, "exception()[${e.message}]")
+            })
+    }
+
+    fun transactionReady2(
+        cid: String?,
+        cid_secret: String? = null,
+        partner_order_id: String?,
+        partner_user_id: String?,
+        item_name: String?,
+        item_code: String? = null,
+        quantity: String?,
+        total_amount: String?,
+        tax_free_amount: String?,
+        vat_amount: String? = null,
+        approval_url: String?,
+        cancel_url: String?,
+        fail_url: String?,
+        available_cards: String? = null,
+        payment_method_type: String? = null,
+        install_month: String? = null,
+        custom_json: String? = null
+    ): Disposable {
+        return api2.transactionReady(
+            cid = cid,
+            cid_secret = cid_secret,
+            partner_order_id = partner_order_id,
+            partner_user_id = partner_user_id,
+            item_name = item_name,
+            item_code = item_code,
+            quantity =  quantity,
+            total_amount = total_amount,
+            tax_free_amount = tax_free_amount,
+            vat_amount = vat_amount,
+            approval_url = approval_url,
+            cancel_url = cancel_url,
+            fail_url = fail_url,
+            available_cards = available_cards,
+            payment_method_type = payment_method_type,
+            install_month = install_month,
+            custom_json = custom_json)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
+                Log.d(App.TAG, "subscribe()")
             },{ e ->
                 Log.d(App.TAG, "exception()[${e.message}]")
             })
