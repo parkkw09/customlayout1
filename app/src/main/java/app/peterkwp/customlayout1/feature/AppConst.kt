@@ -33,7 +33,7 @@ object AppConst {
     const val INI_PAY_API_ADDR = "https://mobile.inicis.com"
 
     // ready
-    const val API_INI_PAY_READY = "/smart/$PAYMENT/"
+    const val API_INI_PAY_READY_CARD = "/smart/wcard/"
 
     /**
      * Field

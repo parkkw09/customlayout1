@@ -9,9 +9,8 @@ import retrofit2.http.POST
 interface InicisApi {
 
     @FormUrlEncoded
-    @POST(AppConst.API_INI_PAY_READY)
-    fun transactionReady(
-        @Field(AppConst.API_FIELD_INI_P_INI_PAYMENT) payment: String?,
+    @POST(AppConst.API_INI_PAY_READY_CARD)
+    fun transactionReadyCard(
         @Field(AppConst.API_FIELD_INI_P_MID) mid: String?,
         @Field(AppConst.API_FIELD_INI_P_OID) oid: String? = null,
         @Field(AppConst.API_FIELD_INI_P_AMT) amt: String?,

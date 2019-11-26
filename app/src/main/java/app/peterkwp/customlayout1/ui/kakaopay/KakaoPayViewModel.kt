@@ -112,8 +112,7 @@ class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
             })
     }
 
-    fun transactionReady2(payment: String?,
-        mid: String?,
+    fun transactionReadyCard(mid: String?,
         oid: String? = null,
         amt: String?,
         uname: String?,
@@ -136,8 +135,7 @@ class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
         charset: String? = null,
         reserved: String? = null
     ): Disposable {
-        return api2.transactionReady(
-            payment = payment,
+        return api2.transactionReadyCard(
             mid = mid,
             oid = oid,
             amt = amt,

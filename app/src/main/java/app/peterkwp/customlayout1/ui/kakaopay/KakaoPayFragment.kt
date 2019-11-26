@@ -69,8 +69,7 @@ class KakaoPayFragment : DaggerFragment() {
     }
 
     private fun transactionTest2(): Disposable {
-        return kakaoPayViewModel.transactionReady2(
-            payment = "CARD",
+        return kakaoPayViewModel.transactionReadyCard(
             mid = "INIpayTest",
             goods = "축구공",
             oid = "testoid",
@@ -212,6 +211,7 @@ class KakaoPayFragment : DaggerFragment() {
             }
         }
         inicis.setOnClickListener {
+        // webView.postUrl("https://mobile.inicis.com/smart/wcard/", "P_MID=INIpayTest&P_OID=testoid&P_AMT=1000&P_UNAME=%ED%99%8D%EA%B8%B8%EB%8F%99&P_MNAME=%EC%9D%B4%EB%8B%88%EC%8B%9C%EC%8A%A4%20%EC%87%BC%ED%95%91%EB%AA%B0&P_NOTI=&P_GOODS=%EC%B6%95%EA%B5%AC%EA%B3%B5&P_EMAIL=smart%40inicis.com&P_NEXT_URL=https%3A%2F%2Fmobile.inicis.com%2Fsmart%2Ftestmall%2Fnext_url_test.php&P_NOTI_URL=http%3A%2F%2Fts.inicis.com%2F%7Eesjeong%2Fmobile_rnoti%2Frnoti.php".toByteArray())
             transactionTest2().apply {
                 disposable.add(this)
             }
