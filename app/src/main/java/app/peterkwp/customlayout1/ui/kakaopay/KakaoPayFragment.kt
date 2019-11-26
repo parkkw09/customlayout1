@@ -68,6 +68,32 @@ class KakaoPayFragment : DaggerFragment() {
         )
     }
 
+    private fun transactionTest2(): Disposable {
+        return kakaoPayViewModel.transactionReady2(
+            payment = "CARD",
+            mid = "INIpayTest",
+            goods = "축구공",
+            oid = "testoid",
+            amt = "1000",
+            uname = "홍길동",
+            mname = "이니시스 쇼핑몰",
+            email = "smart@inicis.com",
+            next_url = "https://mobile.inicis.com/smart/testmall/next_url_test.php",
+            noti = "",
+            noti_url = "http://ts.inicis.com/~esjeong/mobile_rnoti/rnoti.php"
+        )
+    }
+
+    private fun transactionApproveTest2(tid: String, token: String): Disposable {
+        return kakaoPayViewModel.transactionApprove(
+            cid = "TC0ONETIME",
+            tid = tid,
+            partner_order_id = "partner_order_id",
+            partner_user_id = "partner_user_id",
+            pg_token = token
+        )
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private fun initUI(view: View) {
         val textView: TextView = view.findViewById(R.id.text_title)
@@ -186,7 +212,9 @@ class KakaoPayFragment : DaggerFragment() {
             }
         }
         inicis.setOnClickListener {
-            webView.loadUrl("https://www.inicis.com/")
+            transactionTest2().apply {
+                disposable.add(this)
+            }
         }
     }
 

@@ -21,3 +21,5 @@ data class PayReadyModel(
     @SerializedName("ios_app_scheme") val ios_app_scheme: String?,
     @SerializedName("created_at") val created_at: String?
 )
+
+data class PayReadyModel2(@SerializedName("P_STATUS") val status: String?)
