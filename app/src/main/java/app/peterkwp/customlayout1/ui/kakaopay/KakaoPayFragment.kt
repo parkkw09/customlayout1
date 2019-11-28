@@ -2,17 +2,16 @@ package app.peterkwp.customlayout1.ui.kakaopay
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.SslErrorHandler
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -128,20 +127,47 @@ class KakaoPayFragment : DaggerFragment() {
             setSupportMultipleWindows(true)
         }
 
+        webView.webChromeClient = object : WebChromeClient() {
+
+            override fun onJsAlert(
+                view: WebView?,
+                url: String?,
+                message: String?,
+                result: JsResult?
+            ): Boolean {
+                Log.i(App.TAG, "onJsAlert()   = url : {$url} ,  message : ${message}}")
+                return super.onJsAlert(view, url, message, result)
+            }
+
+            override fun onJsConfirm(
+                view: WebView?,
+                url: String?,
+                message: String?,
+                result: JsResult?
+            ): Boolean {
+                Log.i(App.TAG, "onJsConfirm()   = url : {$url} ,  message : ${message}}")
+                return super.onJsConfirm(view, url, message, result)
+            }
+        }
+
         webView.webViewClient = object: WebViewClient() {
 
-            override fun onReceivedSslError(
-                view: WebView?,
-                handler: SslErrorHandler?,
-                error: SslError?
-            ) {
-                Log.d(App.TAG, "onReceivedSslError()")
-                handler?.proceed()
+//            override fun onReceivedSslError(
+//                view: WebView?,
+//                handler: SslErrorHandler?,
+//                error: SslError?
+//            ) {
+//                Log.d(App.TAG, "onReceivedSslError()")
+//                handler?.proceed()
+//            }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                Log.d(App.TAG, "onPageStarted() [$url]")
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                Log.d(App.TAG, "onPageFinished()")
-                super.onPageFinished(view, url)
+                Log.d(App.TAG, "onPageFinished() [$url]")
+//                super.onPageFinished(view, url)
             }
 
             override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
@@ -193,6 +219,27 @@ class KakaoPayFragment : DaggerFragment() {
                             Log.e(App.TAG, "exception[${e.printStackTrace()}]")
                         }
                     }
+                    url.startsWith("intent:hdcardappcardansimclick://") -> {
+                        try {
+                            activity?.run {
+                                val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
+                                intent.`package`?.let { name ->
+                                    if (packageManager.getLaunchIntentForPackage(name) != null) {
+                                        startActivity(intent)
+                                    } else {
+                                        val marketIntent = Intent(Intent.ACTION_VIEW)
+                                        marketIntent.data =
+                                            Uri.parse("market://details?id=" + intent.getPackage())
+                                        startActivity(marketIntent)
+                                    }
+                                } ?: return false
+                                return true
+                            }
+                            return false
+                        } catch (e: Exception) {
+                            Log.e(App.TAG, "exception[${e.printStackTrace()}]")
+                        }
+                    }
                     url.startsWith("market://") -> {
                         try {
                             val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
@@ -208,6 +255,24 @@ class KakaoPayFragment : DaggerFragment() {
                 }
                 return true
             }
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                Log.d(App.TAG, "shouldOverrideUrlLoading = [$request]")
+                return super.shouldOverrideUrlLoading(view, request)
+            }
+
+            override fun shouldOverrideKeyEvent(view: WebView?, event: KeyEvent?): Boolean {
+                Log.d(App.TAG, "shouldOverrideKeyEvent = [${event?.action}]")
+                return super.shouldOverrideKeyEvent(view, event)
+            }
+
+            override fun onLoadResource(view: WebView?, url: String?) {
+                Log.d(App.TAG, "onLoadResource = [$url]")
+                super.onLoadResource(view, url)
+            }
         }
 
         kakaopay.setOnClickListener {
@@ -216,10 +281,11 @@ class KakaoPayFragment : DaggerFragment() {
             }
         }
         inicis.setOnClickListener {
-//        webView.postUrl("https://mobile.inicis.com/smart/payment/", "P_MID=INIpayTest&P_OID=testoid&P_AMT=1000&P_UNAME=%ED%99%8D%EA%B8%B8%EB%8F%99&P_MNAME=%EC%9D%B4%EB%8B%88%EC%8B%9C%EC%8A%A4%20%EC%87%BC%ED%95%91%EB%AA%B0&P_NOTI=&P_GOODS=%EC%B6%95%EA%B5%AC%EA%B3%B5&P_EMAIL=smart%40inicis.com&P_NEXT_URL=https%3A%2F%2Fmobile.inicis.com%2Fsmart%2Ftestmall%2Fnext_url_test.php&P_NOTI_URL=http%3A%2F%2Fts.inicis.com%2F%7Eesjeong%2Fmobile_rnoti%2Frnoti.php".toByteArray())
+//        webView.postUrl("https://mobile.inicis.com/smart/payment/", "P_INI_PAYMENT=CARD&P_MID=INIpayTest&P_OID=testoid&P_AMT=1000&P_UNAME=%ED%99%8D%EA%B8%B8%EB%8F%99&P_MNAME=%EC%9D%B4%EB%8B%88%EC%8B%9C%EC%8A%A4%20%EC%87%BC%ED%95%91%EB%AA%B0&P_NOTI=&P_GOODS=%EC%B6%95%EA%B5%AC%EA%B3%B5&P_EMAIL=smart%40inicis.com&P_NEXT_URL=https%3A%2F%2Fmobile.inicis.com%2Fsmart%2Ftestmall%2Fnext_url_test.php&P_NOTI_URL=http%3A%2F%2Fts.inicis.com%2F%7Eesjeong%2Fmobile_rnoti%2Frnoti.php".toByteArray())
             transactionTest2().apply {
                 disposable.add(this)
             }
+//            webView.loadUrl("https://www.inicis.com/Support_new/inipaymobile/Demo_INIpayMobile.php")
         }
     }
 

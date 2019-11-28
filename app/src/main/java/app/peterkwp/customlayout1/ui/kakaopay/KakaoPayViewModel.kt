@@ -10,6 +10,8 @@ import app.peterkwp.customlayout1.api.KakaoApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.net.URLDecoder
+import java.net.URLEncoder
 
 class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
 
@@ -142,10 +144,10 @@ class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
             mid = mid,
             oid = oid,
             amt = amt,
-            uname = uname,
-            mname = mname,
+            uname = URLEncoder.encode(uname, "euc-kr"),
+            mname = URLEncoder.encode(mname, "euc-kr"),
             noti = noti,
-            goods = goods,
+            goods = URLEncoder.encode(goods, "euc-kr"),
             mobile = mobile,
             email = email,
             next_url = next_url,
@@ -164,8 +166,10 @@ class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
-                Log.d(App.TAG, "subscribe() [$response]")
-                responseBody.value = response
+                Log.d(App.TAG, "subscribe()")
+                val convertResponse = URLDecoder.decode(response, "euc-kr")
+                // Log.d(App.TAG, "subscribe() [$convertResponse]")
+                responseBody.value = convertResponse
             },{ e ->
                 Log.d(App.TAG, "exception()[${e.message}]")
             })
