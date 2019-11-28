@@ -11,6 +11,7 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -23,8 +24,15 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideConverterFactory(): Converter.Factory
+    @Named("JSON_CONVERTER")
+    fun provideConverterFactoryJson(): Converter.Factory
             = GsonConverterFactory.create()
+
+    @Provides
+    @Singleton
+    @Named("TEXT_CONVERTER")
+    fun provideConverterFactoryText(): Converter.Factory
+            = ScalarsConverterFactory.create()
 
     @Provides
     @Singleton
@@ -32,7 +40,7 @@ class ApiModule {
     fun provideApi1(
         @Named(AppConst.KAKAO_API) okHttpClient: OkHttpClient,
         callAdapter: CallAdapter.Factory,
-        converter: Converter.Factory): KakaoApi
+        @Named("JSON_CONVERTER") converter: Converter.Factory): KakaoApi
             = Retrofit.Builder()
         .baseUrl(AppConst.KAKAO_API_ADDR)
         .client(okHttpClient)
@@ -47,7 +55,7 @@ class ApiModule {
     fun provideApi2(
         @Named(AppConst.KAKAO_PAY_API) okHttpClient: OkHttpClient,
         callAdapter: CallAdapter.Factory,
-        converter: Converter.Factory): KakaoApi
+        @Named("JSON_CONVERTER") converter: Converter.Factory): KakaoApi
             = Retrofit.Builder()
         .baseUrl(AppConst.KAKAO_PAY_API_ADDR)
         .client(okHttpClient)
@@ -62,12 +70,14 @@ class ApiModule {
     fun provideApi3(
         @Named(AppConst.INI_PAY_API) okHttpClient: OkHttpClient,
         callAdapter: CallAdapter.Factory,
-        converter: Converter.Factory): InicisApi
+        @Named("JSON_CONVERTER") json_converter: Converter.Factory,
+        @Named("TEXT_CONVERTER") text_converter: Converter.Factory): InicisApi
             = Retrofit.Builder()
         .baseUrl(AppConst.INI_PAY_API_ADDR)
         .client(okHttpClient)
         .addCallAdapterFactory(callAdapter)
-        .addConverterFactory(converter)
+//        .addConverterFactory(json_converter)
+        .addConverterFactory(text_converter)
         .build()
         .create(InicisApi::class.java)
 }

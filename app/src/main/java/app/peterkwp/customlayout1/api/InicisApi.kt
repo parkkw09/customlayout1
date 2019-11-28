@@ -10,7 +10,8 @@ interface InicisApi {
 
     @FormUrlEncoded
     @POST(AppConst.API_INI_PAY_READY_CARD)
-    fun transactionReadyCard(
+    fun transactionReady2(
+        @Field(AppConst.API_FIELD_INI_P_INI_PAYMENT) payment: String?,
         @Field(AppConst.API_FIELD_INI_P_MID) mid: String?,
         @Field(AppConst.API_FIELD_INI_P_OID) oid: String? = null,
         @Field(AppConst.API_FIELD_INI_P_AMT) amt: String?,
@@ -33,5 +34,5 @@ interface InicisApi {
         @Field(AppConst.API_FIELD_INI_P_VBANK_TM) vbank_tm: String? = null,
         @Field(AppConst.API_FIELD_INI_P_CHARSET) charset: String? = null,
         @Field(AppConst.API_FIELD_INI_P_RESERVED) reserved: String? = null
-    ): Single<PayReadyModel2>
+    ): Single<String>
 }

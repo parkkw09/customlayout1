@@ -18,6 +18,7 @@ class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
     }
     val text: LiveData<String> = _text
     val url: MutableLiveData<String> = MutableLiveData()
+    val responseBody: MutableLiveData<String> = MutableLiveData()
     var tid: String? = null
 
     fun transactionReady(
@@ -112,7 +113,8 @@ class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
             })
     }
 
-    fun transactionReadyCard(mid: String?,
+    fun transactionReady2(payment: String?,
+        mid: String?,
         oid: String? = null,
         amt: String?,
         uname: String?,
@@ -135,7 +137,8 @@ class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
         charset: String? = null,
         reserved: String? = null
     ): Disposable {
-        return api2.transactionReadyCard(
+        return api2.transactionReady2(
+            payment = payment,
             mid = mid,
             oid = oid,
             amt = amt,
@@ -161,7 +164,8 @@ class KakaoPayViewModel(val api: KakaoApi, val api2: InicisApi) : ViewModel() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
-                Log.d(App.TAG, "subscribe()")
+                Log.d(App.TAG, "subscribe() [$response]")
+                responseBody.value = response
             },{ e ->
                 Log.d(App.TAG, "exception()[${e.message}]")
             })
