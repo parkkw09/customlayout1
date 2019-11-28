@@ -70,14 +70,12 @@ class ApiModule {
     fun provideApi3(
         @Named(AppConst.INI_PAY_API) okHttpClient: OkHttpClient,
         callAdapter: CallAdapter.Factory,
-        @Named("JSON_CONVERTER") json_converter: Converter.Factory,
-        @Named("TEXT_CONVERTER") text_converter: Converter.Factory): InicisApi
+        @Named("TEXT_CONVERTER") converter: Converter.Factory): InicisApi
             = Retrofit.Builder()
         .baseUrl(AppConst.INI_PAY_API_ADDR)
         .client(okHttpClient)
         .addCallAdapterFactory(callAdapter)
-//        .addConverterFactory(json_converter)
-        .addConverterFactory(text_converter)
+        .addConverterFactory(converter)
         .build()
         .create(InicisApi::class.java)
 }
