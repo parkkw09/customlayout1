@@ -12,6 +12,11 @@ interface KakaoApi {
                     @Query("page") page: String = "1",
                     @Query("size") size: String = "10"): Observable<Model>
 
+    @GET(AppConst.API_KAKAO_SEARCH_WEB)
+    fun searchWeb(@Query("query") query: String,
+                    @Query("page") page: String = "1",
+                    @Query("size") size: String = "10"): Observable<Model>
+
     /**
         cid	가맹점 코드. 10자.	O	String
         cid_secret	가맹점 코드 인증키. 24자 숫자+영문 소문자	X	String

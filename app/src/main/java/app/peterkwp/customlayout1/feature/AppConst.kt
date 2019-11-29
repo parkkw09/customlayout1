@@ -15,6 +15,9 @@ object AppConst {
     // search image
     const val API_KAKAO_SEARCH_IMAGE = "/$V2/search/image"
 
+    // search web
+    const val API_KAKAO_SEARCH_WEB = "/$V2/search/web"
+
     /**
      * Kakao Pay API
      */

@@ -24,10 +24,10 @@
         tools:layout="@layout/fragment_kakaopay" />
 
     <fragment
-        android:id="@+id/nav_tools"
-        android:name="app.peterkwp.customlayout1.ui.tools.ToolsFragment"
-        android:label="@string/menu_tools"
-        tools:layout="@layout/fragment_tools" />
+        android:id="@+id/nav_filtersticker"
+        android:name="app.peterkwp.customlayout1.ui.filtersticker.FilterStickerFragment"
+        android:label="@string/menu_filters"
+        tools:layout="@layout/fragment_filterstcker" />
 
     <fragment
         android:id="@+id/nav_share"

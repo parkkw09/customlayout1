@@ -1,6 +1,7 @@
 package app.peterkwp.customlayout1.di
 
 import app.peterkwp.customlayout1.MainActivity
+import app.peterkwp.customlayout1.ui.filtersticker.FilterStickerFragment
 import app.peterkwp.customlayout1.ui.kakaopay.KakaoPayFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -13,4 +14,7 @@ abstract class AppBinder {
 
     @ContributesAndroidInjector(modules = [MainModule::class])
     abstract fun bindKakaoPayFragment(): KakaoPayFragment
+
+    @ContributesAndroidInjector(modules = [MainModule::class])
+    abstract fun bindFilterStickerFragment(): FilterStickerFragment
 }
