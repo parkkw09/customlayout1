@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.net.http.SslError
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -77,9 +76,7 @@ class KakaoPayFragment : DaggerFragment() {
             uname = "홍길동",
             mname = "이니시스 쇼핑몰",
             email = "smart@inicis.com",
-            next_url = "https://mobile.inicis.com/smart/testmall/next_url_test.php",
-            noti = "",
-            noti_url = "http://ts.inicis.com/~esjeong/mobile_rnoti/rnoti.php"
+            next_url = "https://mobile.inicis.com/smart/testmall/next_url_test.php"
         )
     }
 
@@ -124,7 +121,14 @@ class KakaoPayFragment : DaggerFragment() {
             useWideViewPort = false
             domStorageEnabled = true
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            allowUniversalAccessFromFileURLs = true
             setSupportMultipleWindows(true)
+        }
+
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.apply {
+            setAcceptCookie(true)
+            setAcceptThirdPartyCookies(webView, true)
         }
 
         webView.webChromeClient = object : WebChromeClient() {
@@ -152,22 +156,14 @@ class KakaoPayFragment : DaggerFragment() {
 
         webView.webViewClient = object: WebViewClient() {
 
-//            override fun onReceivedSslError(
-//                view: WebView?,
-//                handler: SslErrorHandler?,
-//                error: SslError?
-//            ) {
-//                Log.d(App.TAG, "onReceivedSslError()")
-//                handler?.proceed()
-//            }
-
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 Log.d(App.TAG, "onPageStarted() [$url]")
+                super.onPageStarted(view, url, favicon)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 Log.d(App.TAG, "onPageFinished() [$url]")
-//                super.onPageFinished(view, url)
+                super.onPageFinished(view, url)
             }
 
             override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
@@ -256,22 +252,9 @@ class KakaoPayFragment : DaggerFragment() {
                 return true
             }
 
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                Log.d(App.TAG, "shouldOverrideUrlLoading = [$request]")
-                return super.shouldOverrideUrlLoading(view, request)
-            }
-
             override fun shouldOverrideKeyEvent(view: WebView?, event: KeyEvent?): Boolean {
                 Log.d(App.TAG, "shouldOverrideKeyEvent = [${event?.action}]")
                 return super.shouldOverrideKeyEvent(view, event)
-            }
-
-            override fun onLoadResource(view: WebView?, url: String?) {
-                Log.d(App.TAG, "onLoadResource = [$url]")
-                super.onLoadResource(view, url)
             }
         }
 
@@ -281,11 +264,9 @@ class KakaoPayFragment : DaggerFragment() {
             }
         }
         inicis.setOnClickListener {
-//        webView.postUrl("https://mobile.inicis.com/smart/payment/", "P_INI_PAYMENT=CARD&P_MID=INIpayTest&P_OID=testoid&P_AMT=1000&P_UNAME=%ED%99%8D%EA%B8%B8%EB%8F%99&P_MNAME=%EC%9D%B4%EB%8B%88%EC%8B%9C%EC%8A%A4%20%EC%87%BC%ED%95%91%EB%AA%B0&P_NOTI=&P_GOODS=%EC%B6%95%EA%B5%AC%EA%B3%B5&P_EMAIL=smart%40inicis.com&P_NEXT_URL=https%3A%2F%2Fmobile.inicis.com%2Fsmart%2Ftestmall%2Fnext_url_test.php&P_NOTI_URL=http%3A%2F%2Fts.inicis.com%2F%7Eesjeong%2Fmobile_rnoti%2Frnoti.php".toByteArray())
             transactionTest2().apply {
                 disposable.add(this)
             }
-//            webView.loadUrl("https://www.inicis.com/Support_new/inipaymobile/Demo_INIpayMobile.php")
         }
     }
 
@@ -311,4 +292,6 @@ class KakaoPayFragment : DaggerFragment() {
         initUI(root)
         return root
     }
+
+
 }
