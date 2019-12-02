@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
+import app.peterkwp.customlayout1.filter.FilterView
 import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -33,9 +34,16 @@ class FilterStickerFragment : DaggerFragment() {
 
     private fun initUI(view: View) {
         val textView: TextView = view.findViewById(R.id.text_title)
+        val filterView: FilterView = view.findViewById(R.id.filter)
 
         filterStickerViewModel.text.observe(this, Observer {
             textView.text = it
+        })
+
+        filterStickerViewModel.complete.observe(this, Observer {
+            if (it) {
+                filterView.setData(filterStickerViewModel.repoNameList)
+            }
         })
     }
 
