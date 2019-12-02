@@ -1,5 +1,6 @@
 package app.peterkwp.customlayout1.di
 
+import app.peterkwp.customlayout1.api.GithubApi
 import app.peterkwp.customlayout1.api.InicisApi
 import app.peterkwp.customlayout1.api.KakaoApi
 import app.peterkwp.customlayout1.feature.AppConst
@@ -18,6 +19,7 @@ class MainModule {
             = KakaoPayViewModelFactory(api, api2)
 
     @Provides
-    fun provideViewModelFactory2(@Named(AppConst.KAKAO_API) api: KakaoApi): FilterStickerViewModelFactory
-            = FilterStickerViewModelFactory(api)
+    fun provideViewModelFactory2(@Named(AppConst.KAKAO_API) api: KakaoApi,
+                                 @Named(AppConst.GITHUB_API) api2: GithubApi): FilterStickerViewModelFactory
+            = FilterStickerViewModelFactory(api, api2)
 }

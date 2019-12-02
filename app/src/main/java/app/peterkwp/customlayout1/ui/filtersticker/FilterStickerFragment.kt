@@ -27,6 +27,10 @@ class FilterStickerFragment : DaggerFragment() {
         return filterStickerViewModel.searchWeb("아이유")
     }
 
+    private fun getData2(): Disposable {
+        return filterStickerViewModel.searchRepo("ai")
+    }
+
     private fun initUI(view: View) {
         val textView: TextView = view.findViewById(R.id.text_title)
 
@@ -50,7 +54,11 @@ class FilterStickerFragment : DaggerFragment() {
     override fun onResume() {
         Log.d(App.TAG, "onResume()")
         super.onResume()
-        getData().apply {
+//        getData().apply {
+//            disposable.add(this)
+//        }
+
+        getData2().apply {
             disposable.add(this)
         }
     }

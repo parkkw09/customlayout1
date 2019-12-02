@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
+import app.peterkwp.customlayout1.api.GithubInterceptor
 import app.peterkwp.customlayout1.api.KakaoInterceptor
 import app.peterkwp.customlayout1.feature.AppConst
 import dagger.Module
@@ -67,6 +68,21 @@ class NetworkModule {
     @Singleton
     @Named(AppConst.INI_PAY_API)
     fun provideOkHttpClient3(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient
+            = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
+
+    @Provides
+    @Singleton
+    @Named(AppConst.GITHUB_API)
+    fun provideGithubInterceptor(@Named("appContext") ctx: Context): GithubInterceptor {
+        return GithubInterceptor(ctx.getString(R.string.github_app_key))
+    }
+
+    @Provides
+    @Singleton
+    @Named(AppConst.GITHUB_API)
+    fun provideOkHttpClient4(loggingInterceptor: HttpLoggingInterceptor, @Named(AppConst.GITHUB_API) interceptor: GithubInterceptor): OkHttpClient
             = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .build()

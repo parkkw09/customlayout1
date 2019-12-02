@@ -5,12 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.peterkwp.customlayout1.App
+import app.peterkwp.customlayout1.api.GithubApi
 import app.peterkwp.customlayout1.api.KakaoApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class FilterStickerViewModel(val api: KakaoApi) : ViewModel() {
+class FilterStickerViewModel(val api: KakaoApi, val api2: GithubApi) : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is Filter Sticker Fragment"
@@ -31,6 +32,22 @@ class FilterStickerViewModel(val api: KakaoApi) : ViewModel() {
                     }
                 }
                 _text.value = "search complete"
+            },{ e ->
+                Log.d(App.TAG, "exception()[${e.message}]")
+            })
+    }
+
+    fun searchRepo(query: String): Disposable {
+        return api2.searchRepository(query)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
+                Log.d(App.TAG, "subscribe()")
+                response.items?.forEach {
+                    Log.d(App.TAG, "name[${it.name}]")
+                }
+
+                _text.value = "search complete total count[${response.totalCount}]"
             },{ e ->
                 Log.d(App.TAG, "exception()[${e.message}]")
             })

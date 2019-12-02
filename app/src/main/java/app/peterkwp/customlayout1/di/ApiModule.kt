@@ -1,5 +1,6 @@
 package app.peterkwp.customlayout1.di
 
+import app.peterkwp.customlayout1.api.GithubApi
 import app.peterkwp.customlayout1.api.InicisApi
 import app.peterkwp.customlayout1.api.KakaoApi
 import app.peterkwp.customlayout1.feature.AppConst
@@ -78,4 +79,19 @@ class ApiModule {
         .addConverterFactory(converter)
         .build()
         .create(InicisApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named(AppConst.GITHUB_API)
+    fun provideApi4(
+        @Named(AppConst.GITHUB_API) okHttpClient: OkHttpClient,
+        callAdapter: CallAdapter.Factory,
+        @Named("JSON_CONVERTER") converter: Converter.Factory): GithubApi
+            = Retrofit.Builder()
+        .baseUrl(AppConst.GITHUB_API_ADDR)
+        .client(okHttpClient)
+        .addCallAdapterFactory(callAdapter)
+        .addConverterFactory(converter)
+        .build()
+        .create(GithubApi::class.java)
 }

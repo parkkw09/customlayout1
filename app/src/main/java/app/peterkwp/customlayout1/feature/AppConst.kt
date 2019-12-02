@@ -39,6 +39,15 @@ object AppConst {
     const val API_INI_PAY_READY_CARD = "/smart/$PAYMENT/"
 
     /**
+     * GITHUB API
+     */
+    const val GITHUB_API = "github"
+    const val GITHUB_API_ADDR = "https://api.github.com"
+
+    // ready
+    const val API_GITHUB_SEARCH = "/search/repositories"
+
+    /**
      * Field
      */
 
