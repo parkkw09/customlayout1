@@ -17,6 +17,7 @@ class FilterStickerViewModel(val api: KakaoApi, val api2: GithubApi) : ViewModel
         value = "This is Filter Sticker Fragment"
     }
     val text: LiveData<String> = _text
+    val repoNameList: ArrayList<String> = ArrayList()
 
     fun searchWeb(query: String): Disposable {
         return api.searchWeb(query)
@@ -45,6 +46,9 @@ class FilterStickerViewModel(val api: KakaoApi, val api2: GithubApi) : ViewModel
                 Log.d(App.TAG, "subscribe()")
                 response.items?.forEach {
                     Log.d(App.TAG, "name[${it.name}]")
+                    it.name?.run {
+                        repoNameList.add(this)
+                    }
                 }
 
                 _text.value = "search complete total count[${response.totalCount}]"
