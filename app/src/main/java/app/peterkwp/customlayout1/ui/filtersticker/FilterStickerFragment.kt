@@ -10,13 +10,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
+import app.peterkwp.customlayout1.filter.FilterItemListener
 import app.peterkwp.customlayout1.filter.FilterView
+import app.peterkwp.customlayout1.toDp
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
-class FilterStickerFragment : DaggerFragment() {
+class FilterStickerFragment : DaggerFragment(), FilterItemListener {
 
     @Inject
     lateinit var viewModelFactory: FilterStickerViewModelFactory
@@ -35,6 +38,7 @@ class FilterStickerFragment : DaggerFragment() {
     private fun initUI(view: View) {
         val textView: TextView = view.findViewById(R.id.text_title)
         val filterView: FilterView = view.findViewById(R.id.filter)
+        filterView.setListener(this)
 
         filterStickerViewModel.text.observe(this, Observer {
             textView.text = it
@@ -42,7 +46,9 @@ class FilterStickerFragment : DaggerFragment() {
 
         filterStickerViewModel.complete.observe(this, Observer {
             if (it) {
+                filterView.setMargin(10.toDp)
                 filterView.setData(filterStickerViewModel.repoNameList)
+                filterView.build()
             }
         })
     }
@@ -54,7 +60,7 @@ class FilterStickerFragment : DaggerFragment() {
     ): View? {
         filterStickerViewModel =
             ViewModelProviders.of(this, viewModelFactory).get(FilterStickerViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_filterstcker, container, false)
+        val root = inflater.inflate(R.layout.fragment_filtersticker, container, false)
         initUI(root)
         return root
     }
@@ -80,5 +86,10 @@ class FilterStickerFragment : DaggerFragment() {
         Log.d(App.TAG, "onDestroy()")
         disposable.clear()
         super.onDestroy()
+    }
+
+    override fun onClickItem(view: View, index: Int, data: String) {
+        Snackbar.make(view , "index[$index], data[$data]", Snackbar.LENGTH_SHORT)
+            .setAction("Action", null).show()
     }
 }

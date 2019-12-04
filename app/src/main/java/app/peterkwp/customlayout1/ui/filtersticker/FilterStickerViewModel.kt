@@ -50,6 +50,8 @@ class FilterStickerViewModel(val api: KakaoApi, val api2: GithubApi) : ViewModel
                     it.name?.run {
                         repoNameList.add(this)
                     }
+                }
+                if (repoNameList.isNotEmpty()) {
                     complete.value = true
                 }
 
