@@ -27,10 +27,6 @@ class FilterStickerFragment : DaggerFragment(), FilterItemListener {
 
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    private fun getData(): Disposable {
-        return filterStickerViewModel.searchWeb("아이유")
-    }
-
     private fun getData2(): Disposable {
         return filterStickerViewModel.searchRepo("ai")
     }
@@ -65,22 +61,19 @@ class FilterStickerFragment : DaggerFragment(), FilterItemListener {
         return root
     }
 
-    override fun onResume() {
-        Log.d(App.TAG, "onResume()")
-        super.onResume()
-//        getData().apply {
-//            disposable.add(this)
-//        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(App.TAG, "onViewCreated()")
+        super.onViewCreated(view, savedInstanceState)
 
         getData2().apply {
             disposable.add(this)
         }
     }
 
-    override fun onPause() {
-        Log.d(App.TAG, "onPause()")
-        super.onPause()
-        filterStickerViewModel.repoNameList.clear()
+    override fun onDestroyView() {
+        Log.d(App.TAG, "onDestroyView()")
+        super.onDestroyView()
+        filterStickerViewModel.clear()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

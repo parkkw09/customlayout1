@@ -107,7 +107,9 @@ class FilterView: ViewGroup {
 
     fun setData(data: List<String>) {
         Log.d(appTag, "setData()")
-        mData?.addAll(data)
+        mData?.run {
+            addAll(data)
+        }
     }
 
     fun setListener(listener: FilterItemListener) {
@@ -124,6 +126,13 @@ class FilterView: ViewGroup {
             }
             addView(view)
         }
+    }
+
+    fun clear() {
+        this.removeAllViews()
+        mData?.clear()
+        mSize?.clear()
+        mListener = null
     }
 
     override fun onAttachedToWindow() {

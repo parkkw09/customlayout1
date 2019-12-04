@@ -61,6 +61,10 @@ class FilterStickerViewModel(val api: KakaoApi, val api2: GithubApi) : ViewModel
             })
     }
 
+    fun clear() {
+        repoNameList.clear()
+    }
+
     override fun onCleared() {
         super.onCleared()
         repoNameList.clear()
