@@ -35,7 +35,7 @@ class FilterView: ViewGroup {
             val prevItemWidth = mPrevItem?.measuredWidth ?: 0
             val itemWidth = filterItem.measuredWidth
             val occupiedWidth = mPrevX + prevItemWidth + margin + itemWidth
-            Log.d(appTag, "occupiedWidth[$occupiedWidth]measuredWidth[$measuredWidth]index[$index]")
+//            Log.d(appTag, "occupiedWidth[$occupiedWidth]measuredWidth[$measuredWidth]index[$index]")
 
             return occupiedWidth <= measuredWidth
         }
