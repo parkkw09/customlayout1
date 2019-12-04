@@ -77,6 +77,12 @@ class FilterStickerFragment : DaggerFragment(), FilterItemListener {
         }
     }
 
+    override fun onPause() {
+        Log.d(App.TAG, "onPause()")
+        super.onPause()
+        filterStickerViewModel.repoNameList.clear()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(App.TAG, "onCreate()")

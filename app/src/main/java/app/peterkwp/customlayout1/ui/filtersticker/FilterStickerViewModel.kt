@@ -46,7 +46,7 @@ class FilterStickerViewModel(val api: KakaoApi, val api2: GithubApi) : ViewModel
             .subscribe({ response ->
                 Log.d(App.TAG, "subscribe()")
                 response.items?.forEach {
-                    Log.d(App.TAG, "name[${it.name}]")
+//                    Log.d(App.TAG, "name[${it.name}]")
                     it.name?.run {
                         repoNameList.add(this)
                     }
@@ -55,9 +55,14 @@ class FilterStickerViewModel(val api: KakaoApi, val api2: GithubApi) : ViewModel
                     complete.value = true
                 }
 
-                _text.value = "search complete total count[${response.totalCount}]"
+                _text.value = "search complete total count[${repoNameList.size}]"
             },{ e ->
                 Log.d(App.TAG, "exception()[${e.message}]")
             })
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        repoNameList.clear()
     }
 }

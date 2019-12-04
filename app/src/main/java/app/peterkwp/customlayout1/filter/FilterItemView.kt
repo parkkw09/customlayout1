@@ -16,9 +16,18 @@ class FilterItemView: FrameLayout {
     lateinit var mTextView: TextView
     var isEnable = false
 
-    constructor(context: Context): super(context) { init(context) }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) { init(context) }
-    constructor(context: Context, attrs: AttributeSet, defStyleRes: Int) : super(context, attrs, defStyleRes) { init(context) }
+    constructor(context: Context): super(context) {
+        init(context)
+    }
+    constructor(context: Context,
+                attrs: AttributeSet): super(context, attrs) {
+        init(context)
+    }
+    constructor(context: Context,
+                attrs: AttributeSet,
+                defStyleRes: Int) : super(context, attrs, defStyleRes) {
+        init(context)
+    }
 
     private fun init(context: Context) {
 //        Log.d(appTag, "init()")

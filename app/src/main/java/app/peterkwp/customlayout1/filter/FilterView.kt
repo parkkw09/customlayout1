@@ -24,15 +24,18 @@ class FilterView: ViewGroup {
     private var mListener: FilterItemListener? = null
 
     constructor(context: Context): super(context)
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleRes: Int) : super(context, attrs, defStyleRes)
+    constructor(context: Context,
+                attrs: AttributeSet): super(context, attrs)
+    constructor(context: Context,
+                attrs: AttributeSet,
+                defStyleRes: Int) : super(context, attrs, defStyleRes)
 
-    private fun canPlaceOnTheSameLine(filterItem: View): Boolean {
+    private fun canPlaceOnTheSameLine(filterItem: View, index: Int): Boolean {
         if (mPrevItem != null) {
-            val occupiedWidth: Int = mPrevX
-                                      + (mPrevItem?.measuredWidth ?: 0)
-                                      + margin
-                                      + filterItem.measuredWidth
+            val prevItemWidth = mPrevItem?.measuredWidth ?: 0
+            val itemWidth = filterItem.measuredWidth
+            val occupiedWidth = mPrevX + prevItemWidth + margin + itemWidth
+            Log.d(appTag, "occupiedWidth[$occupiedWidth]measuredWidth[$measuredWidth]index[$index]")
 
             return occupiedWidth <= measuredWidth
         }
@@ -53,7 +56,7 @@ class FilterView: ViewGroup {
                     mPrevY = margin
                     height = child.measuredHeight + margin
                 }
-                canPlaceOnTheSameLine(child) -> {
+                canPlaceOnTheSameLine(child, i) -> {
                     mPrevX += (mPrevItem?.measuredWidth ?: 0) + margin / 2
                 }
                 else -> {
@@ -62,10 +65,7 @@ class FilterView: ViewGroup {
                     height += child.measuredHeight + margin / 2
                 }
             }
-
-            Log.d(appTag, "mPrevX[$mPrevX], mPrevY[$mPrevY]")
             mSize?.add(Coordinate(mPrevX, mPrevY))
-
             mPrevItem = child
         }
 
@@ -76,6 +76,8 @@ class FilterView: ViewGroup {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+//        Log.d(appTag, "onMeasure() widthMeasureSpec[${MeasureSpec.toString(widthMeasureSpec)}]")
+//        Log.d(appTag, "onMeasure() heightMeasureSpec[${MeasureSpec.toString(heightMeasureSpec)}]")
         setMeasuredDimension(calculateSize(widthMeasureSpec, LayoutParams.MATCH_PARENT),
             calculateSize(heightMeasureSpec, calculateDesiredHeight()))
     }
@@ -86,13 +88,15 @@ class FilterView: ViewGroup {
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        Log.d(appTag, "onLayout()left[$left]top[$top]right[$right]bottom[$bottom][$childCount]")
+//        Log.d(appTag, "onLayout()left[$left]top[$top]right[$right]bottom[$bottom][$childCount]")
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             mSize?.run {
                 val coordinate: Coordinate = this[i]
-                child.layout(coordinate.x, coordinate.y, coordinate.x + child.measuredWidth, coordinate.y + child.measuredHeight)
-                Log.d(appTag, "onLayout() child[$i]left[${child.left}]top[${child.top}]right[${child.right}]bottom[${child.bottom}]width[${child.width}]height[${child.height}]")
+                child.layout(coordinate.x,
+                             coordinate.y,
+                             coordinate.x + child.measuredWidth,
+                             coordinate.y + child.measuredHeight)
             }
         }
     }
@@ -115,11 +119,8 @@ class FilterView: ViewGroup {
         mData?.forEachIndexed { i, data ->
             val view = FilterItemView(context)
             view.setData(data)
-            view.setOnClickListener { view ->
-//                Log.d(appTag, "onClick()[$i][${view.isEnable}]")
-                mListener?.run {
-                    onClickItem(view, i, data)
-                }
+            view.setOnClickListener { itemView ->
+                mListener?.run { onClickItem(itemView, i, data) }
             }
             addView(view)
         }
