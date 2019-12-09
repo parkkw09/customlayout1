@@ -40,6 +40,7 @@ constructor(
     private var mOrientation: Int = 0
     private var mCentered: Boolean = false
     private var mSnap: Boolean = false
+    private var mCircle: Boolean = false
 
     private var mTouchSlop: Int = 0
     private var mLastMotionX = -1f
@@ -106,6 +107,13 @@ constructor(
             invalidate()
         }
 
+    var isCircle: Boolean
+        get() = mCircle
+        set(circle) {
+            mCircle = circle
+            invalidate()
+        }
+
     init {
         // Load defaults from resources
         val res = resources
@@ -139,6 +147,7 @@ constructor(
             res.displayMetrics.density * 3.toFloat()
         )
         mSnap = a.getBoolean(R.styleable.EllipsePageIndicator_snap, false)
+        mCircle = a.getBoolean(R.styleable.EllipsePageIndicator_circle, false)
 
         val background =
             a.getDrawable(R.styleable.EllipsePageIndicator_android_background)
@@ -232,8 +241,19 @@ constructor(
             dY = longOffset + cx
         }
 
-//        canvas.drawCircle(dX, dY, mRadius, mPaintFill)
-        canvas.drawRoundRect(dX - (mRadius * 2), dY + mRadius, dX + (mRadius * 2), dY - mRadius, mRadius, mRadius, mPaintFill)
+        if (mCircle) {
+            canvas.drawCircle(dX, dY, mRadius, mPaintFill)
+        } else {
+            canvas.drawRoundRect(
+                dX - (mRadius * 2),
+                dY + (mRadius + 2),
+                dX + (mRadius * 2),
+                dY - (mRadius + 2),
+                mRadius,
+                mRadius,
+                mPaintFill
+            )
+        }
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
@@ -364,7 +384,7 @@ constructor(
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        mCurrentPage = position
+//        mCurrentPage = position
         mPageOffset = positionOffset
         invalidate()
         mListener?.apply { onPageScrolled(position, positionOffset, positionOffsetPixels) }

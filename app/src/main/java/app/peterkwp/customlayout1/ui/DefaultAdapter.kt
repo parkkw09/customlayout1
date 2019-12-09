@@ -1,4 +1,4 @@
-package app.peterkwp.customlayout1.ui.viewpager
+package app.peterkwp.customlayout1.ui
 
 import android.view.LayoutInflater
 import android.view.View
