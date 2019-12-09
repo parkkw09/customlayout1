@@ -12,9 +12,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
+import app.peterkwp.customlayout1.autoviewpager.AutoScrollViewPager
 import app.peterkwp.customlayout1.pageindicator.EllipsePageIndicator
 import app.peterkwp.customlayout1.ui.DefaultAdapter
-import me.angeldevil.autoscrollviewpager.AutoScrollViewPager
 
 class ViewpagerFragment : Fragment() {
 
@@ -42,7 +42,7 @@ class ViewpagerFragment : Fragment() {
         viewPager.offscreenPageLimit = 3
         indicator.setViewPager(viewPager)
         indicator.isSnap = true
-//        indicator.isCircle = true
+        indicator.isCircle = true
         viewPager.startAutoScroll(2000)
         viewPager.addOnPageChangeListener(object: ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {

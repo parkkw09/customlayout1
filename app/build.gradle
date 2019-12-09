@@ -84,6 +84,6 @@ dependencies {
     implementation 'jp.co.cyberagent.android:gpuimage:2.0.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
-    implementation 'me.angeldevil:AutoScrollViewPager:1.0.8'
+//    implementation 'me.angeldevil:AutoScrollViewPager:1.0.8'
     implementation 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
 }

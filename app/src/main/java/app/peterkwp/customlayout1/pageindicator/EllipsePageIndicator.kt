@@ -170,10 +170,11 @@ constructor(
 
         if (count == 0) return
 
-        if (mCurrentPage >= count) {
-            setCurrentItem(count - 1)
-            return
-        }
+//        Log.d(App.TAG, "onDraw() mCurrentPage[$mCurrentPage]")
+//        if (mCurrentPage >= count) {
+//            setCurrentItem(count - 1)
+//            return
+//        }
 
         val longSize: Int
         val longPaddingBefore: Int
@@ -263,8 +264,7 @@ constructor(
 
         val viewPager = mViewPager
         viewPager ?: return false
-        val count = viewPager.adapter?.count ?: 0
-        if (count == 0) return false
+        if (viewPager.adapter!!.count == 0) return false
 
 //        mViewPager?.run {
 //            this.adapter?.apply {
@@ -303,17 +303,17 @@ constructor(
 
             MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
                 if (!mIsDragging) {
-//                    val count = viewPager.adapter?.count
+                    val count = viewPager.adapter!!.count
                     val width = width
                     val halfWidth = width / 2f
                     val sixthWidth = width / 6f
 
-                    if (mCurrentPage > 0 && ev.x < halfWidth - sixthWidth) {
+                    if ((mCurrentPage > 0) && (ev.x < halfWidth - sixthWidth)) {
                         if (action != MotionEvent.ACTION_CANCEL) {
                             viewPager.currentItem = mCurrentPage - 1
                         }
                         return true
-                    } else if (mCurrentPage < count - 1 && ev.x > halfWidth + sixthWidth) {
+                    } else if ((mCurrentPage < count - 1) && (ev.x > halfWidth + sixthWidth)) {
                         if (action != MotionEvent.ACTION_CANCEL) {
                             viewPager.currentItem = mCurrentPage + 1
                         }
@@ -384,7 +384,8 @@ constructor(
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-//        mCurrentPage = position
+        mCurrentPage = position
+//        Log.d(App.TAG, "onPageScrolled() mCurrentPage[$mCurrentPage]")
         mPageOffset = positionOffset
         invalidate()
         mListener?.apply { onPageScrolled(position, positionOffset, positionOffsetPixels) }
@@ -393,6 +394,7 @@ constructor(
     override fun onPageSelected(position: Int) {
         if (mSnap || mScrollState == ViewPager.SCROLL_STATE_IDLE) {
             mCurrentPage = position
+//            Log.d(App.TAG, "onPageSelected() mCurrentPage[$mCurrentPage]")
             mSnapPage = position
             invalidate()
         }

@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <me.angeldevil.autoscrollviewpager.AutoScrollViewPager
+    <app.peterkwp.customlayout1.autoviewpager.AutoScrollViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
