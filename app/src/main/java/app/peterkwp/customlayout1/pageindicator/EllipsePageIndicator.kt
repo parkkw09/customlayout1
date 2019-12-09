@@ -16,7 +16,7 @@ import app.peterkwp.customlayout1.R
 import kotlin.math.abs
 import kotlin.math.min
 
-class CirclePageIndicator
+class EllipsePageIndicator
 @JvmOverloads
 constructor(
     context: Context,
@@ -41,7 +41,7 @@ constructor(
     private var mCentered: Boolean = false
     private var mSnap: Boolean = false
 
-    private val mTouchSlop: Int
+    private var mTouchSlop: Int = 0
     private var mLastMotionX = -1f
     private var mActivePointerId = INVALID_POINTER
     private var mIsDragging: Boolean = false
@@ -109,20 +109,42 @@ constructor(
     init {
         // Load defaults from resources
         val res = resources
+
+        // Retrieve styles attributes
+        val a = context.obtainStyledAttributes(attrs, R.styleable.EllipsePageIndicator)
+
+        mCentered = a.getBoolean(R.styleable.EllipsePageIndicator_centered, true)
+        mOrientation =
+            a.getInt(R.styleable.EllipsePageIndicator_android_orientation, LinearLayout.HORIZONTAL)
         mPaintPageFill.style = Paint.Style.FILL
-        mPaintPageFill.color = res.getColor(R.color.default_circle_indicator_page_color, null)
-
+        mPaintPageFill.color = a.getColor(
+            R.styleable.EllipsePageIndicator_pageColor,
+            res.getColor(R.color.default_ellipse_indicator_page_color, null)
+        )
         mPaintStroke.style = Paint.Style.STROKE
-        mPaintStroke.color = res.getColor(R.color.default_circle_indicator_stroke_color, null)
-        mPaintStroke.strokeWidth = res.displayMetrics.density * 1.toFloat()
-
+        mPaintStroke.color = a.getColor(
+            R.styleable.EllipsePageIndicator_strokeColor,
+            res.getColor(R.color.default_ellipse_indicator_stroke_color, null)
+        )
+        mPaintStroke.strokeWidth = a.getDimension(
+            R.styleable.EllipsePageIndicator_strokeWidth,
+            res.displayMetrics.density * 1.toFloat()
+        )
         mPaintFill.style = Paint.Style.FILL
-        mPaintFill.color = res.getColor(R.color.default_circle_indicator_fill_color, null)
+        mPaintFill.color = a.getColor(
+            R.styleable.EllipsePageIndicator_fillColor,
+            res.getColor(R.color.default_ellipse_indicator_fill_color, null)
+        )
+        mRadius = a.getDimension(R.styleable.EllipsePageIndicator_radius,
+            res.displayMetrics.density * 3.toFloat()
+        )
+        mSnap = a.getBoolean(R.styleable.EllipsePageIndicator_snap, false)
 
-        mCentered = true
-        mOrientation = LinearLayout.HORIZONTAL
-        mRadius = res.displayMetrics.density * 3.toFloat()
-        mSnap = false
+        val background =
+            a.getDrawable(R.styleable.EllipsePageIndicator_android_background)
+        background?.let { setBackground(it) }
+
+        a.recycle()
 
         mTouchSlop = ViewConfiguration.get(context).scaledDoubleTapSlop
     }
@@ -307,12 +329,12 @@ constructor(
     override fun setViewPager(view: ViewPager) {
         if (mViewPager === view) return
 
-        mViewPager?.apply { removeOnPageChangeListener(this@CirclePageIndicator) }
+        mViewPager?.apply { removeOnPageChangeListener(this@EllipsePageIndicator) }
         checkNotNull(view.adapter) { "ViewPager does not have adapter instance." }
 
         mViewPager = view
         mViewPager?.apply {
-            addOnPageChangeListener(this@CirclePageIndicator)
+            addOnPageChangeListener(this@EllipsePageIndicator)
             invalidate()
         }
     }

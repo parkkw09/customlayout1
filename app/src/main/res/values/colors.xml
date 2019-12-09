@@ -4,9 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="default_circle_indicator_fill_color">#673AB7</color>
-    <color name="default_circle_indicator_page_color">#009688</color>
-    <color name="default_circle_indicator_stroke_color">#FFEB3B</color>
+    <color name="default_ellipse_indicator_fill_color">#FF008F</color>
+    <color name="default_ellipse_indicator_page_color">#F5F5F5</color>
+    <color name="default_ellipse_indicator_stroke_color">#858585</color>
 
     <color name="custom_white">#FFFFFF</color>
     <color name="custom_black">#1E1E1E</color>
