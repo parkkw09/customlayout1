@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import app.peterkwp.customlayout1.calculateSize
 import app.peterkwp.customlayout1.toDp
 import java.io.Serializable
 
@@ -15,11 +14,10 @@ class FilterView: ViewGroup {
     private val appTag = "FilterView"
 
     private var mData: ArrayList<String>? = null
-    private var mSize: ArrayList<Coordinate>? = null
+    private var mSize: LinkedHashMap<Int, Coordinate>? = null
     private var mPrevX: Int = 0
     private var mPrevY: Int = 0
     private var margin = 6.toDp
-    private var mPrevHeight = 0
     private var mPrevItem: View? = null
     private var mListener: FilterItemListener? = null
 
@@ -43,13 +41,14 @@ class FilterView: ViewGroup {
         return false
     }
 
-    private fun calculateDesiredHeight(): Int {
-        var height: Int = mPrevHeight
+    private fun calculateDesiredCoordinate(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        var height = 0
+        mPrevItem = null
 
         for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            child.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-
+            val child: FilterItemView = getChildAt(i) as FilterItemView
+            measureChild(child, widthMeasureSpec, heightMeasureSpec)
+//            Log.d(appTag, "child size [$i]width[${child.measuredWidth}]height[${child.measuredHeight}]")
             when {
                 mPrevItem == null -> {
                     mPrevX = margin
@@ -65,21 +64,17 @@ class FilterView: ViewGroup {
                     height += child.measuredHeight + margin / 2
                 }
             }
-            mSize?.add(Coordinate(mPrevX, mPrevY))
+//            Log.d(appTag, "calculateDesiredHeight()mPrevX[$mPrevX]mPrevY[$mPrevY]i[$i]")
+            mSize?.put(i, Coordinate(mPrevX, mPrevY))
             mPrevItem = child
         }
-
-        height = if (height > 0) height + margin else 0
-        mPrevHeight = height
-
-        return mPrevHeight
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-//        Log.d(appTag, "onMeasure() widthMeasureSpec[${MeasureSpec.toString(widthMeasureSpec)}]")
-//        Log.d(appTag, "onMeasure() heightMeasureSpec[${MeasureSpec.toString(heightMeasureSpec)}]")
-        setMeasuredDimension(calculateSize(widthMeasureSpec, LayoutParams.MATCH_PARENT),
-            calculateSize(heightMeasureSpec, calculateDesiredHeight()))
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        Log.d(appTag, "onMeasure() widthMeasureSpec[${MeasureSpec.toString(widthMeasureSpec)}]")
+        Log.d(appTag, "onMeasure() heightMeasureSpec[${MeasureSpec.toString(heightMeasureSpec)}]")
+        calculateDesiredCoordinate(widthMeasureSpec, heightMeasureSpec)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -92,11 +87,14 @@ class FilterView: ViewGroup {
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             mSize?.run {
-                val coordinate: Coordinate = this[i]
-                child.layout(coordinate.x,
-                             coordinate.y,
-                             coordinate.x + child.measuredWidth,
-                             coordinate.y + child.measuredHeight)
+                val coordinate: Coordinate? = this[i]
+                coordinate?.run {
+//                    Log.d(appTag, "onLayout()x[$x]y[$y]i[$i]")
+                    child.layout(x,
+                        y,
+                        x + child.measuredWidth,
+                        y + child.measuredHeight)
+                }
             }
         }
     }
@@ -121,8 +119,8 @@ class FilterView: ViewGroup {
         mData?.forEachIndexed { i, data ->
             val view = FilterItemView(context)
             view.setData(data)
-            view.setOnClickListener { itemView ->
-                mListener?.run { onClickItem(itemView, i, data) }
+            view.setOnClickListener {
+                mListener?.run { onClickItem(view, i, data) }
             }
             addView(view)
         }
@@ -139,7 +137,7 @@ class FilterView: ViewGroup {
         Log.d(appTag, "onAttachedToWindow()")
         super.onAttachedToWindow()
         mData = ArrayList()
-        mSize = ArrayList()
+        mSize = LinkedHashMap()
     }
 
     override fun onDetachedFromWindow() {
