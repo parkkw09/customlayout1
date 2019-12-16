@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import app.peterkwp.customlayout1.calculateSize
 import app.peterkwp.customlayout1.toDp
 import java.io.Serializable
 
@@ -17,7 +18,10 @@ class FilterView: ViewGroup {
     private var mSize: LinkedHashMap<Int, Coordinate>? = null
     private var mPrevX: Int = 0
     private var mPrevY: Int = 0
-    private var margin = 6.toDp
+    private var mPrevHeight = 0
+    private var marginEnd = 8.toDp
+    private var marginBottom = 12.toDp
+    private var tune = 1
     private var mPrevItem: View? = null
     private var mListener: FilterItemListener? = null
 
@@ -32,7 +36,7 @@ class FilterView: ViewGroup {
         if (mPrevItem != null) {
             val prevItemWidth = mPrevItem?.measuredWidth ?: 0
             val itemWidth = filterItem.measuredWidth
-            val occupiedWidth = mPrevX + prevItemWidth + margin + itemWidth
+            val occupiedWidth = mPrevX + prevItemWidth + marginEnd + itemWidth
 //            Log.d(appTag, "occupiedWidth[$occupiedWidth]measuredWidth[$measuredWidth]index[$index]")
 
             return occupiedWidth <= measuredWidth
@@ -41,40 +45,47 @@ class FilterView: ViewGroup {
         return false
     }
 
-    private fun calculateDesiredCoordinate(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var height = 0
+    private fun calculateDesiredHeight(widthMeasureSpec: Int, heightMeasureSpec: Int): Int {
+        var height: Int = mPrevHeight
         mPrevItem = null
 
         for (i in 0 until childCount) {
             val child: FilterItemView = getChildAt(i) as FilterItemView
             measureChild(child, widthMeasureSpec, heightMeasureSpec)
-//            Log.d(appTag, "child size [$i]width[${child.measuredWidth}]height[${child.measuredHeight}]")
+//            Log.d(appTag, "child size i[$i], measuredWidth[${child.measuredWidth}], measuredHeight[${child.measuredHeight}]")
             when {
                 mPrevItem == null -> {
-                    mPrevX = margin
-                    mPrevY = margin
-                    height = child.measuredHeight + margin
+                    mPrevX = 0
+                    mPrevY = 0
+                    height = child.measuredHeight + marginBottom
                 }
                 canPlaceOnTheSameLine(child, i) -> {
-                    mPrevX += (mPrevItem?.measuredWidth ?: 0) + margin / 2
+                    mPrevX += (mPrevItem?.measuredWidth ?: 0) + marginEnd / tune
                 }
                 else -> {
-                    mPrevX = margin
-                    mPrevY += (mPrevItem?.measuredHeight ?: 0) + margin / 2
-                    height += child.measuredHeight + margin / 2
+                    mPrevX = 0
+                    mPrevY += (mPrevItem?.measuredHeight ?: 0) + marginBottom / tune
+                    height += child.measuredHeight + marginBottom / tune
                 }
             }
-//            Log.d(appTag, "calculateDesiredHeight()mPrevX[$mPrevX]mPrevY[$mPrevY]i[$i]")
+//            Log.d(appTag, "calculateDesiredHeight() i[$i], mPrevX[$mPrevX], mPrevY[$mPrevY]")
             mSize?.put(i, Coordinate(mPrevX, mPrevY))
             mPrevItem = child
         }
+        height = if (height > 0) height else 0
+        mPrevHeight = height
+
+//        Log.d(appTag, "calculateDesiredHeight() mPrevHeight[$mPrevHeight]")
+        return mPrevHeight
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 //        Log.d(appTag, "onMeasure() widthMeasureSpec[${MeasureSpec.toString(widthMeasureSpec)}]")
 //        Log.d(appTag, "onMeasure() heightMeasureSpec[${MeasureSpec.toString(heightMeasureSpec)}]")
-        calculateDesiredCoordinate(widthMeasureSpec, heightMeasureSpec)
+
+        setMeasuredDimension(calculateSize(widthMeasureSpec, 0),
+            calculateSize(heightMeasureSpec, calculateDesiredHeight(widthMeasureSpec, heightMeasureSpec)))
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -89,7 +100,7 @@ class FilterView: ViewGroup {
             mSize?.run {
                 val coordinate: Coordinate? = this[i]
                 coordinate?.run {
-//                    Log.d(appTag, "onLayout()x[$x]y[$y]i[$i]")
+//                    Log.d(appTag, "onLayout() i[$i], x[$x], y[$y], measuredWidth[${child.measuredWidth}], measuredHeight[${child.measuredHeight}]")
                     child.layout(x,
                         y,
                         x + child.measuredWidth,
@@ -99,8 +110,12 @@ class FilterView: ViewGroup {
         }
     }
 
-    fun setMargin(value: Int) {
-        margin = value
+    fun setEndMargin(value: Int) {
+        marginEnd = value
+    }
+
+    fun setBottomMargin(value: Int) {
+        marginBottom = value
     }
 
     fun setData(data: List<String>) {

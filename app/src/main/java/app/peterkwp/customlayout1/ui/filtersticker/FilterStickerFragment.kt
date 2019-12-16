@@ -42,7 +42,8 @@ class FilterStickerFragment : DaggerFragment(), FilterItemListener {
 
         filterStickerViewModel.complete.observe(this, Observer {
             if (it) {
-                filterView.setMargin(10.toDp)
+                filterView.setEndMargin(10.toDp)
+                filterView.setBottomMargin(10.toDp)
                 filterView.setData(filterStickerViewModel.repoNameList)
                 filterView.build()
             }
