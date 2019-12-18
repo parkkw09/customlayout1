@@ -10,6 +10,7 @@ import app.peterkwp.customlayout1.R
 class DefaultAdapter: PagerAdapter() {
 
     private val list = arrayOf("page1", "page2", "page3", "page4", "page5")
+//    private val list = arrayOf("page1")
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val inflater = LayoutInflater.from(container.context)

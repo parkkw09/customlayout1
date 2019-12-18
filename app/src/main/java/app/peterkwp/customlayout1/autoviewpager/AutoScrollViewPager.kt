@@ -324,11 +324,13 @@ class AutoScrollViewPager : ViewPager {
                 )
             }
             for (onPageChangeListener in mOnPageChangeListeners) {
-                onPageChangeListener.onPageScrolled(
-                    position - 1,
-                    positionOffset,
-                    positionOffsetPixels
-                )
+                if (position > 0 && position < getCount()) {
+                    onPageChangeListener.onPageScrolled(
+                        position - 1,
+                        positionOffset,
+                        positionOffsetPixels
+                    )
+                }
             }
         }
 
