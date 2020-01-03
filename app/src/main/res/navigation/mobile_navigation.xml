@@ -30,10 +30,10 @@
         tools:layout="@layout/fragment_filtersticker" />
 
     <fragment
-        android:id="@+id/nav_share"
-        android:name="app.peterkwp.customlayout1.ui.share.ShareFragment"
-        android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
+        android:id="@+id/nav_tab"
+        android:name="app.peterkwp.customlayout1.ui.recyclertab.RecyclerTabFragment"
+        android:label="@string/menu_tab"
+        tools:layout="@layout/fragment_tab" />
 
     <fragment
         android:id="@+id/nav_send"
