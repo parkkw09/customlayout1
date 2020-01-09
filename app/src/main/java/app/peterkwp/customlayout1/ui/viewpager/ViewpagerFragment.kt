@@ -14,7 +14,7 @@ import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
 import app.peterkwp.customlayout1.autoviewpager.AutoScrollViewPager
 import app.peterkwp.customlayout1.pageindicator.EllipsePageIndicator
-import app.peterkwp.customlayout1.ui.DefaultAdapter
+import app.peterkwp.customlayout1.ui.parts.DefaultAdapter
 
 class ViewpagerFragment : Fragment() {
 

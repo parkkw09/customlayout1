@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/nav_tab"
-        android:name="app.peterkwp.customlayout1.ui.recyclertab.RecyclerTabFragment"
+        android:name="app.peterkwp.customlayout1.ui.tabs.TabFragment"
         android:label="@string/menu_tab"
         tools:layout="@layout/fragment_tab" />
 

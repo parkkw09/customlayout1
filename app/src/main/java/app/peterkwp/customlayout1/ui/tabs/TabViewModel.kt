@@ -1,13 +1,13 @@
-package app.peterkwp.customlayout1.ui.recyclertab
+package app.peterkwp.customlayout1.ui.tabs
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class RecyclerTabViewModel : ViewModel() {
+class TabViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is RecyclerTab Fragment"
+        value = "This is Tabs Fragment"
     }
     val text: LiveData<String> = _text
 }

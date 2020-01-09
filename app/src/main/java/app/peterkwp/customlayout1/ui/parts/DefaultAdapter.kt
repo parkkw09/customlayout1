@@ -1,4 +1,4 @@
-package app.peterkwp.customlayout1.ui
+package app.peterkwp.customlayout1.ui.parts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +20,10 @@ class DefaultAdapter: PagerAdapter() {
         val text: TextView = view.findViewById(R.id.text_name)
         text.text = list[position]
         return view
+    }
+
+    override fun getPageTitle(position: Int): CharSequence? {
+        return list[position]
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {

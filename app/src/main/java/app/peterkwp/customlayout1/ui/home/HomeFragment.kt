@@ -13,7 +13,7 @@ import androidx.viewpager.widget.ViewPager
 import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
 import app.peterkwp.customlayout1.autoviewpager.AutoScrollViewPager
-import app.peterkwp.customlayout1.ui.DefaultAdapter
+import app.peterkwp.customlayout1.ui.parts.DefaultAdapter
 import com.viewpagerindicator.CirclePageIndicator
 
 class HomeFragment : Fragment() {
