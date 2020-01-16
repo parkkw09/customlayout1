@@ -13,5 +13,5 @@
     <string name="menu_kakaopay">KakaoPay</string>
     <string name="menu_filters">Filters</string>
     <string name="menu_tab">Tab</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_list">List</string>
 </resources>

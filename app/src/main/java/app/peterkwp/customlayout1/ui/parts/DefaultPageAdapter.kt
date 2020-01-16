@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 import app.peterkwp.customlayout1.R
 
-class DefaultAdapter: PagerAdapter() {
+class DefaultPageAdapter: PagerAdapter() {
 
     private val list = arrayOf("page1", "page2", "page3", "page4", "page5")
 //    private val list = arrayOf("page1")

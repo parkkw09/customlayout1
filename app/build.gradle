@@ -6,6 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
+
     defaultConfig {
         applicationId "app.peterkwp.customlayout1"
         minSdkVersion 26

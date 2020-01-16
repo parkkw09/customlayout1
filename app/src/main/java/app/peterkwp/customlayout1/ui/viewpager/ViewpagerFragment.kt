@@ -14,7 +14,7 @@ import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
 import app.peterkwp.customlayout1.autoviewpager.AutoScrollViewPager
 import app.peterkwp.customlayout1.pageindicator.EllipsePageIndicator
-import app.peterkwp.customlayout1.ui.parts.DefaultAdapter
+import app.peterkwp.customlayout1.ui.parts.DefaultPageAdapter
 
 class ViewpagerFragment : Fragment() {
 
@@ -31,7 +31,7 @@ class ViewpagerFragment : Fragment() {
         val textView: TextView = root.findViewById(R.id.text_title)
         val viewPager: AutoScrollViewPager = root.findViewById(R.id.viewpager)
         val indicator: EllipsePageIndicator = root.findViewById(R.id.indicator)
-        val adapter = DefaultAdapter()
+        val adapter = DefaultPageAdapter()
 
         viewpagerViewModel.text.observe(this, Observer {
             textView.text = it

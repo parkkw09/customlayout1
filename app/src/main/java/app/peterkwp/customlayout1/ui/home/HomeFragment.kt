@@ -13,7 +13,7 @@ import androidx.viewpager.widget.ViewPager
 import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
 import app.peterkwp.customlayout1.autoviewpager.AutoScrollViewPager
-import app.peterkwp.customlayout1.ui.parts.DefaultAdapter
+import app.peterkwp.customlayout1.ui.parts.DefaultPageAdapter
 import com.viewpagerindicator.CirclePageIndicator
 
 class HomeFragment : Fragment() {
@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
         val textView: TextView = root.findViewById(R.id.text_title)
         val viewPager: AutoScrollViewPager = root.findViewById(R.id.viewpager)
         val indicator: CirclePageIndicator = root.findViewById(R.id.indicator)
-        val adapter = DefaultAdapter()
+        val adapter = DefaultPageAdapter()
 
         homeViewModel.text.observe(this, Observer {
             textView.text = it

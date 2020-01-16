@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import app.peterkwp.customlayout1.R
-import app.peterkwp.customlayout1.ui.parts.DefaultAdapter2
+import app.peterkwp.customlayout1.ui.parts.DefaultPageAdapter
 import com.google.android.material.tabs.TabLayout
 
 class TabFragment : Fragment() {
@@ -28,7 +28,7 @@ class TabFragment : Fragment() {
         val textView: TextView = root.findViewById(R.id.text_title)
         val tabs: TabLayout = root.findViewById(R.id.tabs)
         val viewpager: ViewPager = root.findViewById(R.id.viewpager)
-        val adapter = DefaultAdapter2()
+        val adapter = DefaultPageAdapter()
 
         tabViewModel.text.observe(this, Observer {
             textView.text = it

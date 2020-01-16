@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_viewpager, R.id.nav_kakaopay,
-                R.id.nav_filtersticker, R.id.nav_tab, R.id.nav_send
+                R.id.nav_filtersticker, R.id.nav_tab, R.id.nav_paging
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
