@@ -7,11 +7,9 @@ import app.peterkwp.customlayout1.App
 import app.peterkwp.customlayout1.R
 import app.peterkwp.customlayout1.api.ModelDocuments
 import app.peterkwp.customlayout1.ui.parts.FooterHolder
-import app.peterkwp.customlayout1.ui.parts.ImageHolder
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import app.peterkwp.customlayout1.ui.parts.WebHolder
 
-class FooterAdapter(private val func: (ModelDocuments) -> Unit)
+class NestedAdapter(private val func: (ModelDocuments) -> Unit)
 : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: MutableList<ModelDocuments> = mutableListOf()
@@ -35,7 +33,7 @@ class FooterAdapter(private val func: (ModelDocuments) -> Unit)
                 FooterHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_footer, parent, false))
             }
             else ->  {
-                ImageHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false))
+                WebHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_web, parent, false))
             }
         }
     }
@@ -61,13 +59,9 @@ class FooterAdapter(private val func: (ModelDocuments) -> Unit)
         when (holder.itemViewType) {
             App.ITEM -> {
                 items[position].let { documents ->
-                    if (holder is ImageHolder) {
+                    if (holder is WebHolder) {
                         holder.run {
-                            Glide.with(itemView.context)
-                                .load(documents.imageUrl)
-                                .apply(RequestOptions().error(R.drawable.ic_launcher_foreground))
-                                .into(ivItem)
-
+                            ivItem.loadUrl(documents.url)
                             itemView.setOnClickListener { func.invoke(documents) }
                             ivItemCount.text = position.toString()
                         }
