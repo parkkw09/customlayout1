@@ -144,9 +144,10 @@ class PagingListDefaultFragment: DaggerFragment() {
                             Log.e(App.TAG, "adapter is null")
                             return
                         }
-                        Log.d(App.TAG,
-                            "lastItemPosition[$lastItemPosition]lastVisibleItemPosition[$lastVisibleItemPosition]"
-                        )
+//                        Log.d(App.TAG,
+//                            "lastItemPosition[$lastItemPosition], " +
+//                            "lastVisibleItemPosition[$lastVisibleItemPosition]"
+//                        )
                         if (lastItemPosition - lastVisibleItemPosition <= App.THRESHOLD) {
                             if (!loading && !complete) {
                                 loading = true

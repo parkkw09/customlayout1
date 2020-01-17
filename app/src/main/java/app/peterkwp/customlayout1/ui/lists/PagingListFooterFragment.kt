@@ -135,19 +135,19 @@ class PagingListFooterFragment: DaggerFragment() {
                             return
                         }
                         adapter?.run {
-                            Log.d(
-                                App.TAG,
-                                "getItemViewType lastItemPosition[${getItemViewType(lastItemPosition)}]," +
-                                " lastVisibleItemPosition[${getItemViewType(lastVisibleItemPosition)}]"
-                            )
+//                            Log.d(
+//                                App.TAG,
+//                                "getItemViewType lastItemPosition[${getItemViewType(lastItemPosition)}]," +
+//                                " lastVisibleItemPosition[${getItemViewType(lastVisibleItemPosition)}]"
+//                            )
                             if (getItemViewType(lastVisibleItemPosition) == App.FOOTER) return
                         }
                         if (lastVisibleItemPosition < 0) return
-                        Log.d(
-                            App.TAG,
-                            "lastItemPosition[$lastItemPosition]," +
-                            " lastVisibleItemPosition[$lastVisibleItemPosition]"
-                        )
+//                        Log.d(
+//                            App.TAG,
+//                            "lastItemPosition[$lastItemPosition]," +
+//                            " lastVisibleItemPosition[$lastVisibleItemPosition]"
+//                        )
                         if (lastItemPosition - lastVisibleItemPosition <= (App.THRESHOLD + 1)) {
                             if (!loading && !complete) {
                                 loading = true
