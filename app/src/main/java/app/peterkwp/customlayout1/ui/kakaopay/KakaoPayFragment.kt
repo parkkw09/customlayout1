@@ -156,6 +156,14 @@ class KakaoPayFragment : DaggerFragment() {
 
         webView.webViewClient = object: WebViewClient() {
 
+//            override fun shouldInterceptRequest(
+//                view: WebView?,
+//                request: WebResourceRequest?
+//            ): WebResourceResponse? {
+//                request?.requestHeaders?.put("Authorization", "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYWthb0lkIjoiMTI1ODA0MTM1NSIsImRldmljZUtleSI6ImE1N2RjZmViYjcwYjQ1NjQiLCJjcmVhdGVEYXRlIjoiMjAyMC0wMS0yMFQwMjoyNzo0OC40NDdaIiwiaWF0IjoxNTc5NDg3MjY4LCJleHAiOjE1ODAwOTIwNjh9.FGNzyGQYo_71YJsK6-ES8LJ52OGdKG85I7fdmSpFJUA")
+//                return super.shouldInterceptRequest(view, request)
+//            }
+
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 Log.d(App.TAG, "onPageStarted() [$url]")
                 super.onPageStarted(view, url, favicon)
