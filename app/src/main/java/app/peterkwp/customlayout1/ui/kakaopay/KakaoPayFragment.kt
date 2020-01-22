@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -12,7 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import app.peterkwp.customlayout1.App
@@ -95,6 +98,7 @@ class KakaoPayFragment : DaggerFragment() {
         val textView: TextView = view.findViewById(R.id.text_title)
         val kakaopay: Button = view.findViewById(R.id.btn_kakao)
         val inicis: Button = view.findViewById(R.id.btn_inicis)
+        val container: FrameLayout = view.findViewById(R.id.webview_container)
         val webView: WebView = view.findViewById(R.id.webview)
 
         kakaoPayViewModel.text.observe(this, Observer {
@@ -133,13 +137,115 @@ class KakaoPayFragment : DaggerFragment() {
 
         webView.webChromeClient = object : WebChromeClient() {
 
+            override fun onCreateWindow(
+                view: WebView?,
+                isDialog: Boolean,
+                isUserGesture: Boolean,
+                resultMsg: Message?
+            ): Boolean {
+                Log.d(App.TAG, "onCreateWindow()")
+                context?.run {
+                    val newWebView = WebView(this)
+                    newWebView.settings.apply {
+                        javaScriptEnabled = true
+                    }
+                    container.addView(newWebView)
+
+                    resultMsg?.run {
+                        (obj as WebView.WebViewTransport).webView = newWebView
+                        sendToTarget()
+                    }
+
+                    newWebView.webChromeClient = object : WebChromeClient() {
+
+                        override fun onCreateWindow(
+                            view: WebView?,
+                            isDialog: Boolean,
+                            isUserGesture: Boolean,
+                            resultMsg: Message?
+                        ): Boolean {
+                            Log.d(App.TAG, "NewWebView onCreateWindow()")
+                            return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg)
+                        }
+
+                        override fun onCloseWindow(window: WebView?) {
+                            Log.i(App.TAG, "NewWebView onCloseWindow()")
+                            container.removeView(newWebView)
+                            super.onCloseWindow(window)
+                        }
+                    }
+                    newWebView.webViewClient = object: WebViewClient() {
+
+                        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                            Log.d(App.TAG, "NewWebView onPageStarted() [$url]")
+                            super.onPageStarted(view, url, favicon)
+                        }
+
+                        override fun onPageFinished(view: WebView?, url: String?) {
+                            Log.d(App.TAG, "NewWebView onPageFinished() [$url]")
+                            super.onPageFinished(view, url)
+                        }
+
+                        override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
+                            Log.d(App.TAG, "NewWebView shouldOverrideUrlLoading()[$url]")
+                            return true
+                        }
+
+                        override fun shouldOverrideKeyEvent(view: WebView?, event: KeyEvent?): Boolean {
+                            Log.d(App.TAG, "NewWebView shouldOverrideKeyEvent = [${event?.action}]")
+                            return super.shouldOverrideKeyEvent(view, event)
+                        }
+
+                        override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                            if (!detail.didCrash()) {
+                                // Renderer was killed because the system ran out of memory.
+                                // The app can recover gracefully by creating a new WebView instance
+                                // in the foreground.
+                                Log.e(App.TAG, ("NewWebView System killed the WebView rendering process " +
+                                        "to reclaim memory. Recreating..."))
+
+                                /**
+                                 * Do work something!
+                                 */
+
+                                // By this point, the instance variable "mWebView" is guaranteed
+                                // to be null, so it's safe to reinitialize it.
+
+                                return true // The app continues executing.
+                            }
+
+                            // Renderer crashed because of an internal error, such as a memory access violation.
+                            Log.e(App.TAG, "NewWebView The WebView rendering process crashed!")
+
+                            // In this example, the app itself crashes after detecting that the
+                            // renderer crashed. If you choose to handle the crash more gracefully
+                            // and allow your app to continue executing, you should 1) destroy the
+                            // current WebView instance, 2) specify logic for how the app can
+                            // continue executing, and 3) return "true" instead.
+                            /**
+                             * Do work something!
+                             */
+                            return false
+                        }
+                    }
+                    return true
+                }
+
+                return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg)
+            }
+
+            override fun onCloseWindow(window: WebView?) {
+                Log.d(App.TAG, "onCloseWindow()")
+                super.onCloseWindow(window)
+            }
+
             override fun onJsAlert(
                 view: WebView?,
                 url: String?,
                 message: String?,
                 result: JsResult?
             ): Boolean {
-                Log.i(App.TAG, "onJsAlert()   = url : {$url} ,  message : ${message}}")
+                Log.d(App.TAG, "onJsAlert() url:{$url}, message:${message}}")
                 return super.onJsAlert(view, url, message, result)
             }
 
@@ -149,20 +255,12 @@ class KakaoPayFragment : DaggerFragment() {
                 message: String?,
                 result: JsResult?
             ): Boolean {
-                Log.i(App.TAG, "onJsConfirm()   = url : {$url} ,  message : ${message}}")
+                Log.d(App.TAG, "onJsConfirm() url:{$url}, message:${message}}")
                 return super.onJsConfirm(view, url, message, result)
             }
         }
 
         webView.webViewClient = object: WebViewClient() {
-
-//            override fun shouldInterceptRequest(
-//                view: WebView?,
-//                request: WebResourceRequest?
-//            ): WebResourceResponse? {
-//                request?.requestHeaders?.put("Authorization", "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrYWthb0lkIjoiMTI1ODA0MTM1NSIsImRldmljZUtleSI6ImE1N2RjZmViYjcwYjQ1NjQiLCJjcmVhdGVEYXRlIjoiMjAyMC0wMS0yMFQwMjoyNzo0OC40NDdaIiwiaWF0IjoxNTc5NDg3MjY4LCJleHAiOjE1ODAwOTIwNjh9.FGNzyGQYo_71YJsK6-ES8LJ52OGdKG85I7fdmSpFJUA")
-//                return super.shouldInterceptRequest(view, request)
-//            }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 Log.d(App.TAG, "onPageStarted() [$url]")
@@ -264,7 +362,36 @@ class KakaoPayFragment : DaggerFragment() {
                 Log.d(App.TAG, "shouldOverrideKeyEvent = [${event?.action}]")
                 return super.shouldOverrideKeyEvent(view, event)
             }
+
+            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                if (!detail.didCrash()) {
+                    // Renderer was killed because the system ran out of memory.
+                    // The app can recover gracefully by creating a new WebView instance
+                    // in the foreground.
+                    Log.e(App.TAG, ("System killed the WebView rendering process " +
+                            "to reclaim memory. Recreating..."))
+
+                    // do work
+
+                    // By this point, the instance variable "mWebView" is guaranteed
+                    // to be null, so it's safe to reinitialize it.
+
+                    return true // The app continues executing.
+                }
+
+                // Renderer crashed because of an internal error, such as a memory access violation.
+                Log.e(App.TAG, "The WebView rendering process crashed!")
+
+                // In this example, the app itself crashes after detecting that the
+                // renderer crashed. If you choose to handle the crash more gracefully
+                // and allow your app to continue executing, you should 1) destroy the
+                // current WebView instance, 2) specify logic for how the app can
+                // continue executing, and 3) return "true" instead.
+                return false
+            }
         }
+
+        webView.addJavascriptInterface(MyWebInterface(), "custom")
 
         kakaopay.setOnClickListener {
             transactionTest().apply {
@@ -301,5 +428,11 @@ class KakaoPayFragment : DaggerFragment() {
         return root
     }
 
-
+    inner class MyWebInterface {
+        @JavascriptInterface
+        fun onReceiveCustomWebViewStatus(status: String, message: String) {
+            val value = "[${App.TAG}][$status][$message]"
+            Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
+        }
+    }
 }
