@@ -188,6 +188,32 @@ class KakaoPayFragment : DaggerFragment() {
 
                         override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
                             Log.d(App.TAG, "NewWebView shouldOverrideUrlLoading()[$url]")
+                            when {
+                                url.startsWith("intent://") -> {
+                                    try {
+                                        activity?.run {
+                                            val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
+                                            intent.`package`?.let { name ->
+                                                if (packageManager.getLaunchIntentForPackage(name) != null) {
+                                                    startActivity(intent)
+                                                } else {
+                                                    val marketIntent = Intent(Intent.ACTION_VIEW)
+                                                    marketIntent.data =
+                                                        Uri.parse("market://details?id=" + intent.getPackage())
+                                                    startActivity(marketIntent)
+                                                }
+                                            } ?: return false
+                                            return true
+                                        }
+                                        return false
+                                    } catch (e: Exception) {
+                                        Log.e(App.TAG, "exception[${e.printStackTrace()}]")
+                                    }
+                                }
+                                else -> {
+                                    webView.loadUrl(url)
+                                }
+                            }
                             return true
                         }
 
@@ -391,7 +417,7 @@ class KakaoPayFragment : DaggerFragment() {
             }
         }
 
-        webView.addJavascriptInterface(MyWebInterface(), "custom")
+        webView.addJavascriptInterface(MyWebInterface(), "kakaoht")
 
         kakaopay.setOnClickListener {
             transactionTest().apply {
