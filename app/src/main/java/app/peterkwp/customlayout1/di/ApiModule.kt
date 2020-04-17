@@ -14,29 +14,24 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Named
-import javax.inject.Singleton
 
 @Module
 class ApiModule {
     @Provides
-    @Singleton
     fun provideCallAdapterFactory(): CallAdapter.Factory
             = RxJava2CallAdapterFactory.createAsync()
 
     @Provides
-    @Singleton
     @Named("JSON_CONVERTER")
     fun provideConverterFactoryJson(): Converter.Factory
             = GsonConverterFactory.create()
 
     @Provides
-    @Singleton
     @Named("TEXT_CONVERTER")
     fun provideConverterFactoryText(): Converter.Factory
             = ScalarsConverterFactory.create()
 
     @Provides
-    @Singleton
     @Named(AppConst.KAKAO_API)
     fun provideApi1(
         @Named(AppConst.KAKAO_API) okHttpClient: OkHttpClient,
@@ -51,7 +46,6 @@ class ApiModule {
         .create(KakaoApi::class.java)
 
     @Provides
-    @Singleton
     @Named(AppConst.KAKAO_PAY_API)
     fun provideApi2(
         @Named(AppConst.KAKAO_PAY_API) okHttpClient: OkHttpClient,
@@ -66,7 +60,6 @@ class ApiModule {
         .create(KakaoApi::class.java)
 
     @Provides
-    @Singleton
     @Named(AppConst.INI_PAY_API)
     fun provideApi3(
         @Named(AppConst.INI_PAY_API) okHttpClient: OkHttpClient,
@@ -81,7 +74,6 @@ class ApiModule {
         .create(InicisApi::class.java)
 
     @Provides
-    @Singleton
     @Named(AppConst.GITHUB_API)
     fun provideApi4(
         @Named(AppConst.GITHUB_API) okHttpClient: OkHttpClient,

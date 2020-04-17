@@ -12,13 +12,11 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
-import javax.inject.Singleton
 
 @Module
 class NetworkModule {
 
     @Provides
-    @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
         val logger = HttpLoggingInterceptor(
             HttpLoggingInterceptor.Logger { message ->
@@ -33,14 +31,12 @@ class NetworkModule {
     }
 
     @Provides
-    @Singleton
     @Named(AppConst.KAKAO_API)
     fun provideKakaoInterceptor1(@Named("appContext") ctx: Context): KakaoInterceptor {
         return KakaoInterceptor(ctx.getString(R.string.kakao_rest_key))
     }
 
     @Provides
-    @Singleton
     @Named(AppConst.KAKAO_API)
     fun provideOkHttpClient1(loggingInterceptor: HttpLoggingInterceptor, @Named(AppConst.KAKAO_API) interceptor: KakaoInterceptor): OkHttpClient
             = OkHttpClient.Builder()
@@ -49,14 +45,12 @@ class NetworkModule {
         .build()
 
     @Provides
-    @Singleton
     @Named(AppConst.KAKAO_PAY_API)
     fun provideKakaoInterceptor2(@Named("appContext") ctx: Context): KakaoInterceptor {
         return KakaoInterceptor(ctx.getString(R.string.kakao_admin_key))
     }
 
     @Provides
-    @Singleton
     @Named(AppConst.KAKAO_PAY_API)
     fun provideOkHttpClient2(loggingInterceptor: HttpLoggingInterceptor, @Named(AppConst.KAKAO_PAY_API) interceptor: KakaoInterceptor): OkHttpClient
             = OkHttpClient.Builder()
@@ -65,7 +59,6 @@ class NetworkModule {
         .build()
 
     @Provides
-    @Singleton
     @Named(AppConst.INI_PAY_API)
     fun provideOkHttpClient3(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient
             = OkHttpClient.Builder()
@@ -73,14 +66,12 @@ class NetworkModule {
         .build()
 
     @Provides
-    @Singleton
     @Named(AppConst.GITHUB_API)
     fun provideGithubInterceptor(@Named("appContext") ctx: Context): GithubInterceptor {
         return GithubInterceptor(ctx.getString(R.string.github_app_key))
     }
 
     @Provides
-    @Singleton
     @Named(AppConst.GITHUB_API)
     fun provideOkHttpClient4(loggingInterceptor: HttpLoggingInterceptor, @Named(AppConst.GITHUB_API) interceptor: GithubInterceptor): OkHttpClient
             = OkHttpClient.Builder()
