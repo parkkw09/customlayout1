@@ -1,4 +1,4 @@
-# customlayout1
-custom layout frame1
+# customlayout2
+custom layout frame
 
-navigation drawer sample base
+bottomnavi

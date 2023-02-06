@@ -3,41 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/navigation_home">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="app.peterkwp.customlayout1.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:id="@+id/navigation_home"
+        android:name="app.peterkwp.customlayout2.ui.home.HomeFragment"
+        android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_viewpager"
-        android:name="app.peterkwp.customlayout1.ui.viewpager.ViewpagerFragment"
-        android:label="@string/menu_viewpager"
-        tools:layout="@layout/fragment_viewpager" />
+        android:id="@+id/navigation_dashboard"
+        android:name="app.peterkwp.customlayout2.ui.dashboard.DashboardFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/nav_kakaopay"
-        android:name="app.peterkwp.customlayout1.ui.kakaopay.KakaoPayFragment"
-        android:label="@string/menu_kakaopay"
-        tools:layout="@layout/fragment_kakaopay" />
-
-    <fragment
-        android:id="@+id/nav_filtersticker"
-        android:name="app.peterkwp.customlayout1.ui.filtersticker.FilterStickerFragment"
-        android:label="@string/menu_filters"
-        tools:layout="@layout/fragment_filtersticker" />
-
-    <fragment
-        android:id="@+id/nav_tab"
-        android:name="app.peterkwp.customlayout1.ui.tabs.TabFragment"
-        android:label="@string/menu_tab"
-        tools:layout="@layout/fragment_tab" />
-
-    <fragment
-        android:id="@+id/nav_paging"
-        android:name="app.peterkwp.customlayout1.ui.lists.PagingListFragment"
-        android:label="@string/menu_list"
-        tools:layout="@layout/fragment_paging_tabs" />
+        android:id="@+id/navigation_notifications"
+        android:name="app.peterkwp.customlayout2.ui.notifications.NotificationsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>
