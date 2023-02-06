@@ -1,9 +1,9 @@
-package app.peterkwp.customlayout2.adapter
+package app.peterkwp.customlayout1.adapter
 
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import app.peterkwp.customlayout2.R
+import app.peterkwp.customlayout1.R
 
 class DefaultViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
 

@@ -1,4 +1,4 @@
-package app.peterkwp.customlayout2.ui.notifications
+package app.peterkwp.customlayout1.ui.notifications
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

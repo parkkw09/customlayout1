@@ -1,4 +1,4 @@
-package app.peterkwp.customlayout2.dialog;
+package app.peterkwp.customlayout1.dialog;
 
 public interface CustomDialogInterface {
     void onConfirm();
